@@ -1,0 +1,67 @@
+---
+title: "Introduction to fstruct"
+Author: Maike Morrison
+Date: 2021-04-28
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{fstruct-intro}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  warnings = FALSE,
+  comment = "#>"
+)
+
+library(dplyr)
+
+Q_example <- matrix(
+  c(1, "0.001_1", 1, 1, ":", 0.428121, 0.571879, 
+    2, "0.001_2", 2, 1, ":", 0.402014, 0.597986, 
+    3, "0.001_3", 3, 1, ":", 0.384399, 0.615601, 
+    4, "0.001_4", 4, 1, ":", 0.378551, 0.621449, 
+    5, "0.001_5", 5, 1, ":", 0.373431, 0.626569, 
+    6, "0.001_6", 6, 1, ":", 0.368566, 0.631434, 
+    7, "0.001_7", 7, 1, ":", 0.361619, 0.638381, 
+    8, "0.001_8", 8, 1, ":", 0.360798, 0.639202, 
+    9, "0.001_9", 9, 1, ":", 0.358637, 0.641363, 
+    10, "0.001_10", 10, 1, ":", 0.357666, 0.642334
+    ),
+  ncol = 7, 
+  byrow = TRUE
+) %>% 
+  data.frame %>% 
+  mutate(X6 = as.numeric(X6), 
+         X7 = as.numeric(X7))
+
+```
+
+
+The fstruct package provides an $F_{ST}$-based tool to compare variability between $Q$ matrices with rows of individual ancestry coefficients (the default output of population structure inference programs such as STRUCTURE and ADMIXTURE).
+
+The package includes three functions:
+
+* `structure.plot` plots $Q$ matrices using `ggplot2`
+* `fst_stat` calculates $F_{ST}/F_{ST}^\text{max}$ (a  normalized measure of variability) for a $Q$ matrix
+* `bootstrap` generates bootstrap replicates of one or more $Q$ matrices along with associated statistics. 
+
+This package accompanies (insert paper citation here).
+
+Population structure inference software programs such as STRUCTURE and ADMIXTURE output $Q$ matrix files which look like this:
+
+```{r echo = FALSE}
+knitr::kable(Q_example, col.names = NULL)
+```
+
+For the purposes of this function, we only care about the last $k=2$ columns--the ancestry coefficients. In a $Q$ matrix, each row represents an individual....
+
+---------------------
+
+## Example Analysis
+
+```{r setup}
+library(fstruct)
+```
