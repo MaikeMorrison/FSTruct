@@ -5,12 +5,13 @@
 \alias{fstruct}
 \title{fstruct: A package to measure variability in population structure estimates}
 \description{
-An \eqn{$F_{ST}$}-based tool to compare variability between \eqn{Q} matrices
+An Fst-based tool to compare variability between Q matrices
 with rows of individual ancestry coefficients (the default output of
-population structure inference programs such as STRUCTURE and ADMIXTURE).
-Included functions plot \eqn{Q} matrices using ggplot2, calculate
-\eqn{F_{ST}/F_{ST}^\text{max}}(a normalized measure of variability) for a
-\eqn{Q} matrix, and generate bootstrap replicates of one or more \eqn{Q}
+population structure inference programs such as \href{https://web.stanford.edu/group/pritchardlab/structure.html}{STRUCTURE}
+and \href{http://dalexander.github.io/admixture/index.html}{ADMIXTURE}.).
+Included functions plot Q matrices using ggplot2, calculate
+Fst/Fst-max (a normalized measure of variability) for a
+Q matrix, and generate bootstrap replicates of one or more Q
 matrices along with associated statistics. Accompanies (insert paper citation
 here).
 }
