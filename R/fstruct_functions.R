@@ -73,11 +73,11 @@ Q_plot <- function(Q, K){
 
 
 # Q_stat -----------------------------------------------------------------
-#' Compute $F_{ST}$, $F_{ST}^{max}$, and the ratio $F_{ST}/F_{ST}^{max}$ for a $Q$ matrix
+#' Compute Fst, FstMax, and the ratio Fst/FstMax for a Q matrix
 #'
-#' This function computes a statistical measure of ancestry variability, $F_{ST}/F_{ST}^{max}$, for a $Q$ matrix, the default output of population structure inference software programs such as \href{https://web.stanford.edu/group/pritchardlab/structure.html}{STRUCTURE} and \href{http://dalexander.github.io/admixture/index.html}{ADMIXTURE}.
+#' This function computes a statistical measure of ancestry variability, Fst/FstMax, for a Q matrix, the default output of population structure inference software programs such as \href{https://web.stanford.edu/group/pritchardlab/structure.html}{STRUCTURE} and \href{http://dalexander.github.io/admixture/index.html}{ADMIXTURE}. The function returns a named list containing the ratio Fst/FstMax as well as the values of Fst and FstMax.
 #'
-#' $F_{ST}/F_{ST}^{max}$ is a statistic which takes a value of 0 when every individual in a population has identical ancestry, and a value of 1 when the ancestry is maximally variable (see *our paper* for more details). It is based on the population differentiation statistic $F_{ST}$ which, in its traditional application, is used to measure variability in allele frequencies
+#'  Fst/FstMax is a statistic which takes a value of 0 when every individual in a population has identical ancestry, and a value of 1 when the ancestry is maximally variable (see *our paper* for more details). It is based on the population differentiation statistic Fst which, in its traditional application, is used to measure variability in allele frequencies
 #'
 #' @param Q A dataframe, matrix, or array representing a Q matrix. Each row
 #'   represents an individual and the last \code{K} columns contain individual
@@ -87,9 +87,14 @@ Q_plot <- function(Q, K){
 #'   1.
 #' @param K The number of ancestral clusters in the Q matrix. Each individual
 #'   should have \code{K} membership coefficients.
-#' @return A
+#' @return A named list of containing the following entries:
+#' \itemize{
+#' \item  \code{Fst}: Fst computed as if each individual were a population, and each ancestral cluster were an allele.
+#' \item \code{FstMax}: The maximum value of Fst (for fixed frequency of the most frequent allele, or, in the analogy, the membership of the most prevalent ancestral cluster).
+#' \item \code{ratio}: The ratio of Fst/FstMax. We recommend that this statistic is used to quantify ancestry variability and compare the variability of two or more Q matrices.
+#' }
 #' @examples
-#' Q_plot(
+#' #' Q_stat(
 #' # Make an example matrix of membership coefficients.
 #' # Each row is an individual. Rows sum to 1.
 #' Q = matrix(c(.4,.2,.4,
@@ -101,24 +106,11 @@ Q_plot <- function(Q, K){
 #'            byrow = TRUE),
 #' # How many ancestry coefficients per individual?
 #' K = 3
-#' ) +
-#' # Below are example, optional modifications to the default plot
-#'   ggtitle("Population A") +
-#'   scale_fill_brewer("Blues") +
-#'   xlab("Individuals")
+#' )
 #'
 #'@importFrom dplyr %>%
 #' @export
 Q_stat <- function(Q, K){
-  ## INPUT:
-  # Q = matrix where each of row is a vector of ancestry coefficients
-  ## OUTPUT:
-  # A named list of statistics:
-  # Fst = F_ST computed as if each individual were a population,
-  # and each ancestral cluster were an allele
-  # FstMax = The maximum value of Fst (for fixed frequency of the most frequent allele)
-  # (result from Alcala, Rosenberg 2020(?))
-  # ratio = the ratio of Fst/FstMax
   # Check if Q matrix is in STRUCTURE/ADMIXTURE output form, or if it only contains columns of ancestry coefficients
   # If it is in STRUCTURE/ADMIXTURE output form, extract the ancestry coefficients--the last K columns.
   if(ncol(Q) > K){
@@ -166,7 +158,7 @@ Q_bootstrap <- function(matrices, n_replicates, K){
   ## OUTPUT:
   # bootstrap_replicates = list of matrices of bootstrap replicates for each input matrix
   # statistics = dataframe; rows = bootstrap reps, columns = Matrix, Statistic, Value
-  # histogram, CDF, boxplot of F_ST/F_ST max ratio bootstrap estimates
+  # histogram, CDF, boxplot of Fst/Fst max ratio bootstrap estimates
 
   # Do computations if matrices = a single matrix ---------------------------------------
 
@@ -284,19 +276,19 @@ Q_bootstrap <- function(matrices, n_replicates, K){
 
   plot_ecdf <- ggplot(data = all_stats) +
     stat_ecdf(aes(x = ratio, color = Matrix)) +
-    xlab(TeX('$F_{ST}/F_{ST}^{max}$')) + ylab("Cumulative Probability") +
+    xlab(TeX('Fst/FstMax')) + ylab("Cumulative Probability") +
     xlim(0,1) + theme_bw() + scale_color_viridis_d()
 
   plot_boxplot <- ggplot(data = all_stats,
                          aes(x = Matrix, y = ratio)) +
     geom_boxplot() +
-    ylab(TeX('$F_{ST}/F_{ST}^{max}$')) + xlab("") +
+    ylab(TeX('Fst/FstMax')) + xlab("") +
     theme_bw()
 
   plot_violin <- ggplot(data = all_stats,
                         aes(x = Matrix, y = round(ratio,5))) +
     geom_violin(scale = "width") + geom_boxplot(width = 0.3) +
-    ylab(TeX('$F_{ST}/F_{ST}^{max}$')) + xlab("") +
+    ylab(TeX('Fst/FstMax')) + xlab("") +
     theme_bw()
 
   test_kruskal_wallace <- kruskal.test(ratio ~ Matrix,

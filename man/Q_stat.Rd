@@ -2,7 +2,7 @@
 % Please edit documentation in R/fstruct_functions.R
 \name{Q_stat}
 \alias{Q_stat}
-\title{Compute $F_{ST}$, $F_{ST}^{max}$, and the ratio $F_{ST}/F_{ST}^{max}$ for a $Q$ matrix}
+\title{Compute Fst, FstMax, and the ratio Fst/FstMax for a Q matrix}
 \usage{
 Q_stat(Q, K)
 }
@@ -18,16 +18,21 @@ last \code{K} columns, the rows of this matrix should sum to approximately
 should have \code{K} membership coefficients.}
 }
 \value{
-A
+A named list of containing the following entries:
+\itemize{
+\item  \code{Fst}: Fst computed as if each individual were a population, and each ancestral cluster were an allele.
+\item \code{FstMax}: The maximum value of Fst (for fixed frequency of the most frequent allele, or, in the analogy, the membership of the most prevalent ancestral cluster).
+\item \code{ratio}: The ratio of Fst/FstMax. We recommend that this statistic is used to quantify ancestry variability and compare the variability of two or more Q matrices.
+}
 }
 \description{
-This function computes a statistical measure of ancestry variability, $F_{ST}/F_{ST}^{max}$, for a $Q$ matrix, the default output of population structure inference software programs such as \href{https://web.stanford.edu/group/pritchardlab/structure.html}{STRUCTURE} and \href{http://dalexander.github.io/admixture/index.html}{ADMIXTURE}.
+This function computes a statistical measure of ancestry variability, Fst/FstMax, for a Q matrix, the default output of population structure inference software programs such as \href{https://web.stanford.edu/group/pritchardlab/structure.html}{STRUCTURE} and \href{http://dalexander.github.io/admixture/index.html}{ADMIXTURE}. The function returns a named list containing the ratio Fst/FstMax as well as the values of Fst and FstMax.
 }
 \details{
-$F_{ST}/F_{ST}^{max}$ is a statistic which takes a value of 0 when every individual in a population has identical ancestry, and a value of 1 when the ancestry is maximally variable (see *our paper* for more details). It is based on the population differentiation statistic $F_{ST}$ which, in its traditional application, is used to measure variability in allele frequencies
+Fst/FstMax is a statistic which takes a value of 0 when every individual in a population has identical ancestry, and a value of 1 when the ancestry is maximally variable (see *our paper* for more details). It is based on the population differentiation statistic Fst which, in its traditional application, is used to measure variability in allele frequencies
 }
 \examples{
-Q_plot(
+#' Q_stat(
 # Make an example matrix of membership coefficients.
 # Each row is an individual. Rows sum to 1.
 Q = matrix(c(.4,.2,.4,
@@ -39,10 +44,6 @@ Q = matrix(c(.4,.2,.4,
            byrow = TRUE),
 # How many ancestry coefficients per individual?
 K = 3
-) +
-# Below are example, optional modifications to the default plot
-  ggtitle("Population A") +
-  scale_fill_brewer("Blues") +
-  xlab("Individuals")
+)
 
 }
