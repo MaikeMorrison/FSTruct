@@ -1,7 +1,8 @@
 # THIS FILE CONTAINS:
 # Q_plot - generate a population structure plot using ggplot2
 # Q_stat - generate fst, fstmax, and fst/fstmax for a Q matrix
-# bootstrap - generate bootstrap Q matrices and related plots and statistics
+# Q_bootstrap - generate bootstrap Q matrices and related plots and statistics
+# Q_simulate - simulate Q matrices using the Dirichlet distribution
 
 # Q_plot -----------------------------------------------------------------
 #' Plot a Q matrix using \code{\link[ggplot2]{ggplot2}}
@@ -45,9 +46,9 @@
 #' K = 3
 #' ) +
 #' # Below are example, optional modifications to the default plot
-#'   ggtitle("Population A") +
-#'   scale_fill_brewer("Blues") +
-#'   xlab("Individuals")
+#'   ggplot2::ggtitle("Population A") +
+#'   ggplot2::scale_fill_brewer("Blues") +
+#'   ggplot2::xlab("Individuals")
 #'
 #'@importFrom dplyr %>%
 #' @export
@@ -76,7 +77,7 @@ Q_plot <- function(Q, K){
 #'
 #' This function computes a statistical measure of ancestry variability, $F_{ST}/F_{ST}^{max}$, for a $Q$ matrix, the default output of population structure inference software programs such as \href{https://web.stanford.edu/group/pritchardlab/structure.html}{STRUCTURE} and \href{http://dalexander.github.io/admixture/index.html}{ADMIXTURE}.
 #'
-#' $F_{ST}/F_{ST}^{max}$ is a statistic which takes a value of 0 when every individual in a population has identical ancestry, and a value of 1 when the ancestry is maximally variable (see *the paper* for more details). It is based on the population differentiation statistic $F_{ST}$ which, in its traditional application, is used to measure variability in allele frequencies
+#' $F_{ST}/F_{ST}^{max}$ is a statistic which takes a value of 0 when every individual in a population has identical ancestry, and a value of 1 when the ancestry is maximally variable (see *our paper* for more details). It is based on the population differentiation statistic $F_{ST}$ which, in its traditional application, is used to measure variability in allele frequencies
 #'
 #' @param Q A dataframe, matrix, or array representing a Q matrix. Each row
 #'   represents an individual and the last \code{K} columns contain individual
@@ -85,11 +86,8 @@ Q_plot <- function(Q, K){
 #'   last \code{K} columns, the rows of this matrix should sum to approximately
 #'   1.
 #' @param K The number of ancestral clusters in the Q matrix. Each individual
-#'   should have \code{K} membership coefficients. The default color scheme is
-#'   "spectral" from \code{\link[RColorBrewer]{RColorBrewer}}, which tolerates
-#'   \code{K} values of 11 or fewer.
-#' @return A \code{ggplot} object describing a bar plot of membership
-#'   coefficients from the Q matrix.
+#'   should have \code{K} membership coefficients.
+#' @return A
 #' @examples
 #' Q_plot(
 #' # Make an example matrix of membership coefficients.

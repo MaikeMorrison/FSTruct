@@ -7,21 +7,22 @@
 
 <!-- badges: end -->
 
-The fstruct package provides a tool to compare variability between \(Q\)
+The fstruct package provides a tool to compare variability between Q
 matrices with rows of individual ancestry coefficients (the default
 output of population structure inference programs such as STRUCTURE and
 ADMIXTURE). The method employs the population differentiation statistic
-\[\(f_{ST}\)\]{<https://en.wikipedia.org/wiki/Fixation_index>}.
+Fst.
 
-The package includes three functions:
+The package includes four functions:
 
-  - `structure.plot` plots \(Q\) matrices using `ggplot2`
-  - `fst_stat` calculates \(F_{ST}/F_{ST}^\text{max}\) (a normalized
-    measure of variability) for a \(Q\) matrix
-  - `bootstrap` generates bootstrap replicates of one or more \(Q\)
-    matrices along with associated statistics, including
-    \(F_{ST}/F_{ST}^\text{max}\), as well as statistical tests to
-    compare bootstrap distributions of \(F_{ST}/F_{ST}^\text{max}\) .
+  - `Q_plot` plots Q matrices using `ggplot2`
+  - `Q_stat` calculates Fst/Fst^max (a normalized measure of
+    variability) for a Q matrix
+  - `Q_bootstrap` generates bootstrap replicates of one or more Q
+    matrices along with associated statistics, including Fst/Fst^max, as
+    well as statistical tests to compare bootstrap distributions of
+    Fst/Fst^max .
+  - `Q_simulate` generates one or more Q matrices
 
 This package accompanies (insert paper citation here).
 
