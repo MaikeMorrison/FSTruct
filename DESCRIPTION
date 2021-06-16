@@ -1,4 +1,4 @@
-Package: fstruct
+Package: FSTruct
 Type: Package
 Title: Measure variability in population structure estimates
 Version: 0.0.0.9000

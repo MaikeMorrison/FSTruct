@@ -166,23 +166,60 @@ Q_stat <- function(Q, K){
 #' \item \code{test_pairwise_wilcox}: Results of a Wilcoxon rank-sum test performed on the bootstrap distributions of Fst/FstMax. This test is a non-parameteric statistical test of whether \emph{each pairwise combination} of provided bootstrap distributions is identically distributed.
 #' }
 #' @examples
-#' A = matrix(c(.4,.2,.4,
-#'              .5,.4,.1,
-#'              .6,.1,.3,
-#'              .6,.3,.1),
-#'            nrow = 4,
-#'            byrow = TRUE)
+#' # Use Q_simulate to generate 4 random Q matrices
+#' A = Q_simulate(alpha = .1,
+#'                lambda = c(.5, .5),
+#'                rep = 1,
+#'                popsize = 20,
+#'                seed = 1)
 #'
-#' B = matrix(c(0,0,1,
-#'              .5,.5,0,
-#'              .5,.4,.1,
-#'              .6,.2,.2,
-#'              .6,.4,0),
-#'            nrow = 5,
-#'            byrow = TRUE)
+#' B = Q_simulate(alpha = .1,
+#'                lambda = c(.5, .5),
+#'                rep = 1,
+#'                popsize = 20,
+#'                seed = 2)
 #'
-#' bs <- Q_bootstrap(matrices = list(A=A, B=B),
-#'                   n_replicates = 10, K = 3)
+#' C = Q_simulate(alpha = 1,
+#'                lambda = c(.5, .5),
+#'                rep = 1,
+#'                popsize = 20,
+#'                seed = 3)
+#'
+#' D = Q_simulate(alpha = 1,
+#'                lambda = c(.5, .5),
+#'                rep = 1,
+#'                popsize = 20,
+#'                seed = 4)
+#'
+#' # Draw 100 bootstrap replicates from
+#' # each of the 4 Q matrices
+#' bs <- Q_bootstrap(matrices = list(A=A,
+#'                                   B=B,
+#'                                   C=C,
+#'                                   D=D),
+#'                   n_replicates = 100,
+#'                   K = 2)
+#'
+#' # Access the elements of this list using $.
+#' # For example....
+#'
+#' # To look at all 400 bootstrap Q matrix
+#' # replicates:
+#' bs$bootstrap_replicates
+#'
+#' # To look at Fst, FstMax, and
+#' # the ratio (Fst/FstMax) for each replicate
+#' bs$statistics
+#'
+#' # To look at a plot of the distribution of
+#' # Fst/FstMax for each Q matrix:
+#' bs$plot_violin
+#'
+#' # To determine if each of the 4 distibutions of
+#' # Fst/FstMax is significantly different from
+#' # each of the other distributions:
+#' bs$test_pairwise_wilcox
+#'
 #'
 #'@importFrom dplyr %>%
 #' @export
@@ -311,20 +348,20 @@ Q_bootstrap <- function(matrices, n_replicates, K){
 
   plot_ecdf <- ggplot2::ggplot(data = all_stats) +
     ggplot2::stat_ecdf(ggplot2::aes(x = ratio, color = Matrix)) +
-    ggplot2::xlab(latex2exp::TeX('Fst/FstMax')) +
+    ggplot2::xlab(latex2exp::TeX('F_{ST}/F_{ST}^{max}')) +
     ggplot2::ylab("Cumulative Probability") +
     ggplot2::xlim(0,1) + ggplot2::theme_bw() + ggplot2::scale_color_viridis_d()
 
   plot_boxplot <- ggplot2::ggplot(data = all_stats,
                                   ggplot2::aes(x = Matrix, y = ratio)) +
     ggplot2::geom_boxplot() +
-    ggplot2::ylab(latex2exp::TeX('Fst/FstMax')) + ggplot2::xlab("") +
+    ggplot2::ylab(latex2exp::TeX('F_{ST}/F_{ST}^{max}')) + ggplot2::xlab("") +
     ggplot2::theme_bw()
 
   plot_violin <- ggplot2::ggplot(data = all_stats,
                                  ggplot2::aes(x = Matrix, y = round(ratio,5))) +
     ggplot2::geom_violin(scale = "width") + ggplot2::geom_boxplot(width = 0.3) +
-    ggplot2::ylab(latex2exp::TeX('Fst/FstMax')) + ggplot2::xlab("") +
+    ggplot2::ylab(latex2exp::TeX('F_{ST}/F_{ST}^{max}')) + ggplot2::xlab("") +
     ggplot2::theme_bw()
 
   test_kruskal_wallis <- stats::kruskal.test(ratio ~ Matrix,
@@ -372,19 +409,26 @@ Q_bootstrap <- function(matrices, n_replicates, K){
 #' \item \code{ind}: Which individual in each Q matrix the row corresponds to (a number between 1 and the parameter \code{popsize})
 #' \item \code{alpha}: The alpha value used to simulate the Q matrix.
 #' \item \code{Pop}: alpha_rep (where alpha and rep are the columns described above). Serves as a unique identifier for each Q matrix (useful if running simulations with many different values of \eqn{\alpha}).
+#' \item \code{spacer}: a repeated ":" to make simulated Q matrices match output of population structure inference software.
 #' \item \code{lambda1, lambda2, etc.}: Membership coefficients (sum to 1).
 #' }
 #'
 #' @examples
 #' # Simulate 100 random Q matrices.
 #' # Each Q matrix has 100 individuals.
-#' # On average these individuals have mean ancestry (1/2, 1/4, 1/4)
+#' # On average these individuals have
+#' # mean ancestry (1/2, 1/4, 1/4)
 #' # from each of 3 ancestral clusters.
-#' # The variance of each cluster x_i is Var[x_i] = lambda_i/(alpha + 1)
-#' # Here lambda_1 = 1/2, lambda_2 = lambda_3 = 1/4
+#' # The variance of each cluster x_i is
+#' # Var[x_i] = lambda_i/(alpha + 1)
+#' # Here lambda_1 = 1/2,
+#' #      lambda_2 = lambda_3 = 1/4
 #'
-#' Q_list <- Q_simulate(alpha = 1, lambda = c(1/2, 1/4, 1/4),
-#'                     rep = 100, popsize = 50, seed = 1)
+#' Q_list <- Q_simulate(alpha = 1,
+#'                      lambda = c(1/2, 1/4, 1/4),
+#'                      rep = 100,
+#'                      popsize = 50,
+#'                      seed = 1)
 #'
 #'@importFrom dplyr %>%
 #' @export
@@ -462,6 +506,7 @@ Q_simulate <- function(alpha, lambda, rep, popsize, seed){
                     alpha = as.numeric(alpha),
                     Pop = paste(round(alpha,3), rep, sep = "_") %>% as.factor,
                     rep = as.factor(rep),
+                    spacer = ":",
                     .before = lambda1) %>%
     dplyr::arrange(rep, Pop, ind)
   return(Q)

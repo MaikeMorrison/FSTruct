@@ -1,13 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# fstruct – Measure variability in population structure estimates
+# FSTruct – Measure variability in population structure estimates
 
 <!-- badges: start -->
 
 <!-- badges: end -->
 
-The fstruct package provides a tool to compare variability between Q
+The FSTruct package provides a tool to compare variability between Q
 matrices with rows of individual ancestry coefficients (the default
 output of population structure inference programs such as STRUCTURE and
 ADMIXTURE). The method employs the population differentiation statistic
@@ -15,24 +15,25 @@ Fst.
 
 The package includes four functions:
 
-  - `Q_plot` plots Q matrices using `ggplot2`
   - `Q_stat` calculates Fst/Fst^max (a normalized measure of
-    variability) for a Q matrix
+    variability) for a Q matrix.
   - `Q_bootstrap` generates bootstrap replicates of one or more Q
     matrices along with associated statistics, including Fst/Fst^max, as
     well as statistical tests to compare bootstrap distributions of
     Fst/Fst^max .
-  - `Q_simulate` generates one or more Q matrices
+  - `Q_plot` plots Q matrices using `ggplot2`.
+  - `Q_simulate` generates one or more Q matrices using the Dirichlet
+    distribution.
 
 This package accompanies (insert paper citation here).
 
 ## Installation
 
-<!-- You can install the released version of fstruct from [CRAN](https://CRAN.R-project.org) with: -->
+<!-- You can install the released version of FSTruct from [CRAN](https://CRAN.R-project.org) with: -->
 
 <!-- ``` r -->
 
-<!-- install.packages("fstruct") -->
+<!-- install.packages("FSTruct") -->
 
 <!-- ``` -->
 
