@@ -1,5 +1,5 @@
 ---
-title: "Introduction to fstruct"
+title: "Introduction to FSTruct"
 Author: Maike Morrison
 Date: 2021-04-28
 output: rmarkdown::html_vignette
@@ -40,13 +40,14 @@ Q_example <- matrix(
 ```
 
 
-The fstruct package provides an $F_{ST}$-based tool to compare variability between $Q$ matrices with rows of individual ancestry coefficients (the default output of population structure inference programs such as STRUCTURE and ADMIXTURE).
+The FSTruct package provides an $F_{ST}$-based tool to compare variability between $Q$ matrices with rows of individual ancestry coefficients (the default output of population structure inference programs such as STRUCTURE and ADMIXTURE).
 
 The package includes three functions:
 
-* `structure.plot` plots $Q$ matrices using `ggplot2`
-* `fst_stat` calculates $F_{ST}/F_{ST}^\text{max}$ (a  normalized measure of variability) for a $Q$ matrix
-* `bootstrap` generates bootstrap replicates of one or more $Q$ matrices along with associated statistics. 
+* `Q_plot` plots Q matrices using `ggplot2`
+* `Q_stat` calculates Fst/Fst^max (a  normalized measure of variability) for a Q matrix
+* `Q_bootstrap` generates bootstrap replicates of one or more Q matrices along with associated statistics, including Fst/Fst^max, as well as statistical tests to compare bootstrap distributions of Fst/Fst^max . 
+* `Q_simulate` generates one or more Q matrices
 
 This package accompanies (insert paper citation here).
 

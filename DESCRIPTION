@@ -19,7 +19,9 @@ Imports:
     ggplot2,
     purrr,
     stats,
-    tidyr
+    tidyr, 
+    gtools,
+    latex2exp
 RoxygenNote: 7.1.1
 Suggests: 
     rmarkdown,

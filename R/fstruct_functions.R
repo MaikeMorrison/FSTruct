@@ -41,9 +41,8 @@
 #'              .6,.1,.3,
 #'              .6,.3,.1),
 #'            nrow = 5,
-#'            byrow = TRUE)
-#' # How many ancestry coefficients per individual?
-#' K = 3
+#'            byrow = TRUE),
+#'            K = 3 # How many ancestry coefficients per individual?
 #' ) +
 #' # Below are example, optional modifications to the default plot
 #'   ggplot2::ggtitle("Population A") +
@@ -103,9 +102,8 @@ Q_plot <- function(Q, K){
 #'              .6,.1,.3,
 #'              .6,.3,.1),
 #'            nrow = 5,
-#'            byrow = TRUE)
-#' # How many ancestry coefficients per individual?
-#' K = 3
+#'            byrow = TRUE),
+#'            K = 3 # How many ancestry coefficients per individual?
 #' )
 #'
 #' @export

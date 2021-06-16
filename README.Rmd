@@ -13,12 +13,12 @@ knitr::opts_chunk$set(
 )
 ```
 
-# fstruct -- Measure variability in population structure estimates
+# FSTruct -- Measure variability in population structure estimates
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The fstruct package provides a tool to compare variability between Q matrices with rows of individual ancestry coefficients (the default output of population structure inference programs such as STRUCTURE and ADMIXTURE). The method employs the population differentiation statistic Fst.
+The FSTruct package provides a tool to compare variability between Q matrices with rows of individual ancestry coefficients (the default output of population structure inference programs such as STRUCTURE and ADMIXTURE). The method employs the population differentiation statistic Fst.
 
 The package includes four functions:
 
@@ -31,10 +31,10 @@ This package accompanies (insert paper citation here).
 
 ## Installation
 
-<!-- You can install the released version of fstruct from [CRAN](https://CRAN.R-project.org) with: -->
+<!-- You can install the released version of FSTruct from [CRAN](https://CRAN.R-project.org) with: -->
 
 <!-- ``` r -->
-<!-- install.packages("fstruct") -->
+<!-- install.packages("FSTruct") -->
 <!-- ``` -->
 
 You can install the development version from [GitHub](https://github.com/) with:
