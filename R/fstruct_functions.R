@@ -41,7 +41,7 @@
 #'              .6,.1,.3,
 #'              .6,.3,.1),
 #'            nrow = 5,
-#'            byrow = TRUE),
+#'            byrow = TRUE)
 #' # How many ancestry coefficients per individual?
 #' K = 3
 #' ) +
@@ -103,7 +103,7 @@ Q_plot <- function(Q, K){
 #'              .6,.1,.3,
 #'              .6,.3,.1),
 #'            nrow = 5,
-#'            byrow = TRUE),
+#'            byrow = TRUE)
 #' # How many ancestry coefficients per individual?
 #' K = 3
 #' )
@@ -313,20 +313,20 @@ Q_bootstrap <- function(matrices, n_replicates, K){
 
   plot_ecdf <- ggplot2::ggplot(data = all_stats) +
     ggplot2::stat_ecdf(ggplot2::aes(x = ratio, color = Matrix)) +
-    ggplot2::xlab(TeX('Fst/FstMax')) +
+    ggplot2::xlab(latex2exp::TeX('Fst/FstMax')) +
     ggplot2::ylab("Cumulative Probability") +
     ggplot2::xlim(0,1) + ggplot2::theme_bw() + ggplot2::scale_color_viridis_d()
 
   plot_boxplot <- ggplot2::ggplot(data = all_stats,
                                   ggplot2::aes(x = Matrix, y = ratio)) +
     ggplot2::geom_boxplot() +
-    ggplot2::ylab(TeX('Fst/FstMax')) + ggplot2::xlab("") +
+    ggplot2::ylab(latex2exp::TeX('Fst/FstMax')) + ggplot2::xlab("") +
     ggplot2::theme_bw()
 
   plot_violin <- ggplot2::ggplot(data = all_stats,
                                  ggplot2::aes(x = Matrix, y = round(ratio,5))) +
     ggplot2::geom_violin(scale = "width") + ggplot2::geom_boxplot(width = 0.3) +
-    ggplot2::ylab(TeX('Fst/FstMax')) + ggplot2::xlab("") +
+    ggplot2::ylab(latex2exp::TeX('Fst/FstMax')) + ggplot2::xlab("") +
     ggplot2::theme_bw()
 
   test_kruskal_wallis <- stats::kruskal.test(ratio ~ Matrix,
