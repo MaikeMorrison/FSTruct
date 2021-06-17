@@ -58,9 +58,13 @@ Q_plot <- function(Q, K){
     Q <- Q[,(ncol(Q)-K+1):ncol(Q)]
   }
 
+  # Generate the data to plot
+
+  df <- data.frame(cbind(data.frame(Individuals =1:nrow(Q)),Q)) %>%
+    tidyr::pivot_longer(cols = 2:(ncol(Q)+1))
+  df$name <- factor(df$name, levels = unique(df$name) %>% rev)
   # Generate the structure plot
-  ggplot2::ggplot(data.frame(cbind(data.frame(Individuals =1:nrow(Q)),Q)) %>%
-           tidyr::pivot_longer(cols = 2:(ncol(Q)+1)),
+  ggplot2::ggplot(data = df,
            ggplot2::aes(fill=name, y=value, x=Individuals)) +
     ggplot2::geom_bar(position="stack", stat="identity", width=1) +
     ggplot2::scale_fill_brewer(palette = "Spectral") +
@@ -415,7 +419,8 @@ Q_bootstrap <- function(matrices, n_replicates, K){
 #'
 #' @examples
 #' # Simulate 100 random Q matrices.
-#' # Each Q matrix has 100 individuals.
+#' # In this example, each Q matrix has
+#' # 100 individuals.
 #' # On average these individuals have
 #' # mean ancestry (1/2, 1/4, 1/4)
 #' # from each of 3 ancestral clusters.

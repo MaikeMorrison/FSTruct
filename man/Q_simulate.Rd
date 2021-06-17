@@ -33,7 +33,8 @@ Simulates Q matrices by drawing vectors of membership coefficients from a Dirich
 }
 \examples{
 # Simulate 100 random Q matrices.
-# Each Q matrix has 100 individuals.
+# In this example, each Q matrix has
+# 100 individuals.
 # On average these individuals have
 # mean ancestry (1/2, 1/4, 1/4)
 # from each of 3 ancestral clusters.
