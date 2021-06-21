@@ -53,7 +53,19 @@ The package includes four functions:
 
 This package accompanies (insert paper citation here).
 
-**In this document, we discuss how to load or simulate $Q$ matrices, visualize them, analyze their variability, and interpret the results of statistical tests comparing the variability of multiple $Q$ matrices. All of these tasks can be accomplished using the four functions in the package FSTruct. ** 
+**In this document, we walk through an example analysis, including how to:**
+
+* **Load or simulate $Q$ matrices**
+
+* **Visualize $Q$ matrices**
+
+* **Calculate the variability of each $Q$ matrix**
+
+* **Generate & analyze bootstrap distributions of $F_{ST}/F_{ST}^{max}$ for each matrix**
+
+* **Use statistical tests to compare the variability of multiple $Q$ matrices.**
+
+All of these tasks can be accomplished using the four functions in the package FSTruct.
 
 ## What is a $Q$ matrix?
 
@@ -116,6 +128,8 @@ knitr::kable(A)
 
 You can see that its format is very similar to the format of the ADMIXTURE $Q$ matrix above. Importantly, the last $K=2$ columns contain the membership coefficients.
 
+## Visualize $Q$ Matrices
+
 I can visualize these matrices using the function `Q_plot`, which has two parameters: a $Q$ matrix (`Q`) and the number of ancestral clusters (`K`).
 
 ```{r}
@@ -153,9 +167,9 @@ We observe that matrices A and B are visually similar, with most individuals fro
 
 While we can build intuition about what high and low variability $Q$ matrices look like, it is often still helpful to statistically quantify this variability.
 
-## Compute $F_{ST}/F_{ST}^{max}$ for each $Q$ matrix
+## Calculate the variability of each $Q$ matrix
 
-As a preliminary analysis, let's compute $F_{ST}/F_{ST}^{max}$ for each of our four simulated $Q$ matrices. We will do this analysis using the function `Q_stat`, which accepts two parameters: a $Q$ matrix (`Q`) and the number of ancestral clusters (`K`).
+As a preliminary analysis, let's calculate $F_{ST}/F_{ST}^{max}$ for each of our four simulated $Q$ matrices. We will do this analysis using the function `Q_stat`, which accepts two parameters: a $Q$ matrix (`Q`) and the number of ancestral clusters (`K`).
 
 ```{r}
 Q_stat(Q = A, K = 2)
@@ -216,6 +230,9 @@ cowplot::plot_grid(bs$plot_boxplot + ggplot2::ggtitle("Box Plot"),
                    bs$plot_ecdf + ggplot2::ggtitle("ECDF Plot"), 
                    nrow = 2, rel_widths = c(1,1,2))
 ```
+
+
+## Use statistical tests to compare the variability of multiple $Q$ matrices
 
 Comparing these distributions by eye, it seems like the bootstrap distributions of matrices `A` and `B` are each quite different from all of the other matrices. `C` and `D`, on the other hand, seem quite similar to each other. Rather than relying on our intuition, we can statistically test the similarity of these matrices. Included in the output of `Q_bootstrap` are the output of two such tests:
 
