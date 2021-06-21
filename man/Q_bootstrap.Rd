@@ -4,7 +4,7 @@
 \alias{Q_bootstrap}
 \title{Generate and analyze bootstrap replicates of one or more Q matrices}
 \usage{
-Q_bootstrap(matrices, n_replicates, K)
+Q_bootstrap(matrices, n_replicates, K, seed)
 }
 \arguments{
 \item{matrices}{A dataframe, matrix, or array representing a Q matrix, or a (possibly named) list of arbitrarily many such objects. For each Q matrix, matrix rows represents an individual and the last \code{K} columns contain individual membership coefficients (when restricted to the last \code{K} columns, the rows should sum to approximately 1). If the list of matrices is not named, the matrices are numbered and the numbers are used in place of names.}
@@ -12,6 +12,8 @@ Q_bootstrap(matrices, n_replicates, K)
 \item{n_replicates}{The number of bootstrap replicate matrices to generate for each provided Q matrix.}
 
 \item{K}{The number of ancestral clusters in the Q matrix. Each individual should have \code{K} membership coefficients.}
+
+\item{seed}{Optional; sets the random seed. Use if reproducibility of random results is desired.}
 }
 \value{
 A named list of containing the following entries:

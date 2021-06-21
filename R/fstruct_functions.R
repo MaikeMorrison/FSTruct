@@ -158,6 +158,7 @@ Q_stat <- function(Q, K){
 #' @param matrices A dataframe, matrix, or array representing a Q matrix, or a (possibly named) list of arbitrarily many such objects. For each Q matrix, matrix rows represents an individual and the last \code{K} columns contain individual membership coefficients (when restricted to the last \code{K} columns, the rows should sum to approximately 1). If the list of matrices is not named, the matrices are numbered and the numbers are used in place of names.
 #' @param n_replicates The number of bootstrap replicate matrices to generate for each provided Q matrix.
 #' @param K The number of ancestral clusters in the Q matrix. Each individual should have \code{K} membership coefficients.
+#' @param seed Optional; sets the random seed. Use if reproducibility of random results is desired.
 #'
 #' @return A named list of containing the following entries:
 #' \itemize{
@@ -227,7 +228,7 @@ Q_stat <- function(Q, K){
 #'
 #'@importFrom dplyr %>%
 #' @export
-Q_bootstrap <- function(matrices, n_replicates, K){
+Q_bootstrap <- function(matrices, n_replicates, K, seed){
   ## INPUT:
   # matrices = list of Q-matrices we seek to compare. Each of row is a vector of ancestry coefficients. Each matrix can be named (e.g. matrices = list(A=matrix(...), B=matrix(...)))
   # n_replicates = number of bootstrap replicates desired
@@ -236,6 +237,10 @@ Q_bootstrap <- function(matrices, n_replicates, K){
   # bootstrap_replicates = list of matrices of bootstrap replicates for each input matrix
   # statistics = dataframe; rows = bootstrap reps, columns = Matrix, Statistic, Value
   # histogram, CDF, boxplot of Fst/FstMax ratio bootstrap estimates
+
+  # set seed
+
+  if(!missing(seed)){set.seed(seed)}
 
   # Do computations if matrices = a single matrix ---------------------------------------
 

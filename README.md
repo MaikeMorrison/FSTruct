@@ -7,11 +7,10 @@
 
 <!-- badges: end -->
 
-The FSTruct package provides a tool to compare variability between Q
-matrices with rows of individual ancestry coefficients (the default
-output of population structure inference programs such as STRUCTURE and
-ADMIXTURE). The method employs the population differentiation statistic
-Fst.
+The FSTruct package provides an Fst-based tool to compare the
+variability of Q matrices (matrices with rows of ancestry coefficients,
+the default output of population structure inference programs such a
+STRUCTURE and ADMIXTURE).
 
 The package includes four functions:
 
