@@ -236,5 +236,5 @@ The results of these tests support that there are significant differences in the
 
 ## Final Thoughts
 
-
+This concludes the introduction to the package FSTruct--we hope you found it helpful. For more information, see *the paper*, *the package documentation*, or in the R console type `?FSTruct::Q_...` to read the documentation for particular functions (e.g. `?FSTruct::Q_bootstrap`). 
 
