@@ -373,17 +373,17 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed){
     ggplot2::ylab(latex2exp::TeX('F_{ST}/F_{ST}^{max}')) + ggplot2::xlab("") +
     ggplot2::theme_bw()
 
-  if(is.list(matrices)){
-  test_kruskal_wallis <- stats::kruskal.test(ratio ~ Matrix,
-                                       data= all_stats)
-
-  test_pairwise_wilcox <-  stats::pairwise.wilcox.test(x = all_stats$ratio,
-                                                g = all_stats$Matrix,
-                                                paired = FALSE)
-  }else{
+  if(is.data.frame(matrices) | is.array(matrices)){
     test_kruskal_wallis <- "This statistical test can only be performed if a list of matrices is provided."
 
     test_pairwise_wilcox <- "This statistical test can only be performed if a list of matrices is provided."
+  }else{
+    test_kruskal_wallis <- stats::kruskal.test(ratio ~ Matrix,
+                                               data= all_stats)
+
+    test_pairwise_wilcox <-  stats::pairwise.wilcox.test(x = all_stats$ratio,
+                                                         g = all_stats$Matrix,
+                                                         paired = FALSE)
   }
 
   bootstrap_replicates <- mget(paste0("bootstrap_matrices_",
