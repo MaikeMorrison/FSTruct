@@ -2,7 +2,7 @@
 % Please edit documentation in R/FSTruct_functions.R
 \name{Q_plot}
 \alias{Q_plot}
-\title{Plot a Q matrix using \code{\link[ggplot2]{ggplot2}}}
+\title{Plot a Q matrix using ggplot2}
 \usage{
 Q_plot(Q, K)
 }
@@ -16,11 +16,11 @@ last \code{K} columns, the rows of this matrix should sum to approximately
 
 \item{K}{The number of ancestral clusters in the Q matrix. Each individual
 should have \code{K} membership coefficients. The default color scheme is
-"spectral" from \code{\link[RColorBrewer]{RColorBrewer}}, which tolerates
+"spectral" from RColorBrewer, which tolerates
 \code{K} values of 11 or fewer.}
 }
 \value{
-A \code{ggplot} object describing a bar plot of membership
+A ggplot object describing a bar plot of membership
   coefficients from the Q matrix.
 }
 \description{
@@ -31,8 +31,8 @@ and \href{http://dalexander.github.io/admixture/index.html}{ADMIXTURE}. In
 the output plot, each vertical bar represents a single individual's ancestry;
 the height of each color in the bar corresponds to the individual membership
 coefficients given by the Q matrix. Because this function produces a
-\code{\link[ggplot2]{ggplot}} object, its output can be modified using
-standard \code{\link[ggplot2]{ggplot2}} syntax. For a more comprehensive
+ggplot object, its output can be modified using
+standard ggplot2 syntax. For a more comprehensive
 population structure visualization program, see the program
 \emph{\href{https://rosenberglab.stanford.edu/distruct.html}{distruct}}.
 }
