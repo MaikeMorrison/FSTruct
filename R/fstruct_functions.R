@@ -50,6 +50,7 @@
 #'   ggplot2::xlab("Individuals")
 #'
 #'@importFrom dplyr %>%
+#'@importFrom rlang .data
 #' @export
 Q_plot <- function(Q, K){
   # Check if Q matrix is in STRUCTURE/ADMIXTURE output form, or if it only contains columns of ancestry coefficients
@@ -65,7 +66,7 @@ Q_plot <- function(Q, K){
   df$name <- factor(df$name, levels = unique(df$name) %>% rev)
   # Generate the structure plot
   ggplot2::ggplot(data = df,
-           ggplot2::aes(fill=name, y=value, x=Individuals)) +
+           ggplot2::aes(fill=.data$name, y=.data$value, x=.data$Individuals)) +
     ggplot2::geom_bar(position="stack", stat="identity", width=1) +
     ggplot2::scale_fill_brewer(palette = "Spectral") +
     ggplot2::theme_void() +
@@ -97,7 +98,7 @@ Q_plot <- function(Q, K){
 #' \item \code{ratio}: The ratio of Fst/FstMax. We recommend that this statistic is used to quantify ancestry variability and compare the variability of two or more Q matrices.
 #' }
 #' @examples
-#' #' Q_stat(
+#' Q_stat(
 #' # Make an example matrix of membership coefficients.
 #' # Each row is an individual. Rows sum to 1.
 #' Q = matrix(c(.4,.2,.4,
@@ -227,16 +228,10 @@ Q_stat <- function(Q, K){
 #'
 #'
 #'@importFrom dplyr %>%
+#'@importFrom rlang .data
 #' @export
 Q_bootstrap <- function(matrices, n_replicates, K, seed){
-  ## INPUT:
-  # matrices = list of Q-matrices we seek to compare. Each of row is a vector of ancestry coefficients. Each matrix can be named (e.g. matrices = list(A=matrix(...), B=matrix(...)))
-  # n_replicates = number of bootstrap replicates desired
-  # K = # of ancestral clusters. Used to clean Q matrix.
-  ## OUTPUT:
-  # bootstrap_replicates = list of matrices of bootstrap replicates for each input matrix
-  # statistics = dataframe; rows = bootstrap reps, columns = Matrix, Statistic, Value
-  # histogram, CDF, boxplot of Fst/FstMax ratio bootstrap estimates
+  . <- NULL # to please R command check
 
   # set seed
 
@@ -269,8 +264,9 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed){
     # Compute statistics for these reps
     stats_Q <- lapply(X = bootstrap_matrices_Q,
                       FUN = function(matrix) Q_stat(Q = matrix, K=ncol(matrix))) %>%
-      unlist %>%
-      matrix(ncol = 3, byrow = TRUE) %>% data.frame() %>%
+      unlist() %>%
+      matrix(ncol = 3, byrow = TRUE) %>%
+      data.frame() %>%
       `colnames<-`(c("Fst", "FstMax", "ratio"))
 
 
@@ -306,9 +302,12 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed){
       }
 
       # Compute statistics for these reps
-      stats <- lapply(X = bs_list, FUN = function(matrix) Q_stat(Q = matrix, K=ncol(matrix))) %>% unlist %>%
-        matrix(ncol = 3, byrow = TRUE) %>% data.frame()
-      colnames(stats) <- c("Fst", "FstMax", "ratio")
+      stats <- lapply(X = bs_list,
+                      FUN = function(matrix) Q_stat(Q = matrix, K=ncol(matrix))) %>%
+        unlist() %>%
+        matrix(ncol = 3, byrow = TRUE) %>%
+        data.frame() %>%
+      `colnames<-` (c("Fst", "FstMax", "ratio"))
 
       # Sometimes, for values of Fst very close to 0 (i.e. order 10^-6, 10^-7), the
       # value of Fst ends up negative due to precision errors.
@@ -330,7 +329,7 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed){
                                     FUN = function(matrix){
                                       Q_stat(Q = matrix, K=ncol(matrix))
                                     }) %>%
-          unlist %>%
+          unlist() %>%
           matrix(ncol = 3, byrow = TRUE) %>% data.frame()
 
       } # repeat this until there are no more errors
@@ -356,19 +355,20 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed){
   all_stats$Matrix <- factor(all_stats$Matrix, levels = unique(all_stats$Matrix))
 
   plot_ecdf <- ggplot2::ggplot(data = all_stats) +
-    ggplot2::stat_ecdf(ggplot2::aes(x = ratio, color = Matrix)) +
+    ggplot2::stat_ecdf(ggplot2::aes(x = .data$ratio, color = .data$Matrix)) +
     ggplot2::xlab(latex2exp::TeX('F_{ST}/F_{ST}^{max}')) +
     ggplot2::ylab("Cumulative Probability") +
     ggplot2::xlim(0,1) + ggplot2::theme_bw() + ggplot2::scale_color_viridis_d()
 
   plot_boxplot <- ggplot2::ggplot(data = all_stats,
-                                  ggplot2::aes(x = Matrix, y = ratio)) +
+                                  ggplot2::aes(x = .data$Matrix, y = .data$ratio)) +
     ggplot2::geom_boxplot() +
     ggplot2::ylab(latex2exp::TeX('F_{ST}/F_{ST}^{max}')) + ggplot2::xlab("") +
     ggplot2::theme_bw()
 
   plot_violin <- ggplot2::ggplot(data = all_stats,
-                                 ggplot2::aes(x = Matrix, y = round(ratio,5))) +
+                                 ggplot2::aes(x = .data$Matrix,
+                                              y = round(.data$ratio,5))) +
     ggplot2::geom_violin(scale = "width") + ggplot2::geom_boxplot(width = 0.3) +
     ggplot2::ylab(latex2exp::TeX('F_{ST}/F_{ST}^{max}')) + ggplot2::xlab("") +
     ggplot2::theme_bw()
@@ -378,8 +378,7 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed){
 
     test_pairwise_wilcox <- "This statistical test can only be performed if a list of matrices is provided."
   }else{
-    test_kruskal_wallis <- stats::kruskal.test(ratio ~ Matrix,
-                                               data= all_stats)
+    test_kruskal_wallis <- stats::kruskal.test(all_stats$ratio ~ all_stats$Matrix)
 
     test_pairwise_wilcox <-  stats::pairwise.wilcox.test(x = all_stats$ratio,
                                                          g = all_stats$Matrix,
@@ -447,8 +446,10 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed){
 #'                      seed = 1)
 #'
 #'@importFrom dplyr %>%
+#'@importFrom rlang .data
 #' @export
 Q_simulate <- function(alpha, lambda, rep, popsize, seed){
+  . <- NULL # to please R command check
 
   # How many clusters are there?
   K = length(lambda)
@@ -518,13 +519,13 @@ Q_simulate <- function(alpha, lambda, rep, popsize, seed){
   }
 
   # Give each population a unique identifier: alpha_rep
-  Q <- Q %>% dplyr::mutate(ind = as.factor(ind),
+  Q <- Q %>% dplyr::mutate(ind = as.factor(.data$ind),
                     alpha = as.numeric(alpha),
                     Pop = paste(round(alpha,3), rep, sep = "_") %>% as.factor,
                     rep = as.factor(rep),
                     spacer = ":",
-                    .before = lambda1) %>%
-    dplyr::arrange(rep, Pop, ind)
+                    .before = .data$lambda1) %>%
+    dplyr::arrange(rep, .data$Pop, .data$ind)
   return(Q)
 }
 

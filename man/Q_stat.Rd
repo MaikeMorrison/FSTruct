@@ -32,7 +32,7 @@ This function computes a statistical measure of ancestry variability, Fst/FstMax
 Fst/FstMax is a statistic which takes a value of 0 when every individual in a population has identical ancestry, and a value of 1 when the ancestry is maximally variable (see *our paper* for more details). It is based on the population differentiation statistic Fst which, in its traditional application, is used to measure variability in allele frequencies
 }
 \examples{
-#' Q_stat(
+Q_stat(
 # Make an example matrix of membership coefficients.
 # Each row is an individual. Rows sum to 1.
 Q = matrix(c(.4,.2,.4,

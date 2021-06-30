@@ -21,7 +21,8 @@ Imports:
     purrr,
     stats,
     gtools,
-    latex2exp
+    latex2exp,
+    rlang
 RoxygenNote: 7.1.1
 Suggests: 
     rmarkdown,
