@@ -42,7 +42,7 @@ Q = matrix(c(.4,.2,.4,
              .6,.3,.1),
            nrow = 5,
            byrow = TRUE),
-           K = 3 # How many ancestry coefficients per individual?
-)
+           K = 3) # How many ancestry coefficients per individual?
+
 
 }

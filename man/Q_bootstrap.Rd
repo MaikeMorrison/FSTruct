@@ -16,7 +16,7 @@ Q_bootstrap(matrices, n_replicates, K, seed)
 \item{seed}{Optional; sets the random seed. Use if reproducibility of random results is desired.}
 }
 \value{
-A named list of containing the following entries:
+A named list containing the following entries:
 \itemize{
 \item \code{bootstrap_replicates}: A named list of lists. Each element is named for a Q matrix provided in \code{matrices} and contains a list of \code{n_replicates} bootstrap replicates of the provided matrix. E.g., if \code{n_replicates = 100} and the first Q matrix in \code{matrices} is named \code{A}, then the first element of \code{bootstrap_replicates}, \code{bootstrap_replicates$bootstrap_matrices_A}, is itself a list of 100 matrices, each representing a bootstrap replicate of matrix A.
 \item \code{statistics}: A dataframe containing the output of \code{Q_stat}: \code{Fst}, \code{FstMax}, and \code{ratio} (Fst/FstMax), computed for each bootstrap replicate matrix in \code{bootstrap_replicates}. The ratio Fst/FstMax quantifies the variability of each  Q matrix. The first column, titled \code{Matrix}, is a factor indicating which provided Q matrix the row corresponds to (the matrix name if \code{matrices} is a named list, or a number otherwise). The row names are of the form \code{stats_matrix.replicate} where \code{matrix} is the name of one of the provided Q matrices (or the entry number if the list elements were not named) and replicate is the number of bootstrap replicate (rep takes values from 1 to \code{n_replicates}).

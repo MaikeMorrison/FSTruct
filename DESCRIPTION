@@ -4,9 +4,9 @@ Title: Measure variability in population structure estimates
 Version: 0.0.0.9000
 Authors@R: person("Maike", "Morrison", email = "maikem@stanford.edu",
   role = c("aut", "cre"))
-Description: An $F_{ST}$-based tool to compare variability between $Q$ matrices with 
+Description: An $F_{ST}$-based tool to quantify and compare the variability in $Q$ matrices with 
     rows of individual ancestry coefficients (the default output of population 
-    structure inference programs such as STRUCTURE and ADMIXTURE). Included functions
+    structure inference programs such as STRUCTURE and ADMIXTURE). Included functions simulate random $Q$ matrices,
     plot $Q$ matrices using ggplot2, calculate $F_{ST}/F_{ST}^\text{max}$ (a
     normalized measure of variability) for a $Q$ matrix, and generate 
     bootstrap replicates of one or more $Q$ matrices along with associated statistics.
@@ -14,16 +14,17 @@ Description: An $F_{ST}$-based tool to compare variability between $Q$ matrices 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: 
+Imports:
     dplyr,
     ggplot2,
+    tidyr, 
     purrr,
     stats,
-    tidyr, 
     gtools,
     latex2exp
 RoxygenNote: 7.1.1
 Suggests: 
     rmarkdown,
-    knitr
+    knitr,
+    cowplot
 VignetteBuilder: knitr
