@@ -131,11 +131,16 @@ Q_stat <- function(Q, K){
     ratio = 0
   }else{if(sig1 <= 1){
     FstMax = ((I-1)*(1-sig1*(J-1)*(2-J*sig1)))/
-      (I-1+sig1*(J-1)*(2-J*sig1))
+      (I-(1-sig1*(J-1)*(2-J*sig1)))
   }else{
-    FstMax = (I*(I-1)-2*(I-1)*sig1.frac*(1-sig1.frac)-
-                floor(sig1)*(floor(sig1)-1)-2*sig1.frac*floor(sig1))/
-      (I*(I-1)+2*sig1.frac*(1-sig1.frac)-floor(sig1)*(floor(sig1)-1)-2*sig1.frac*floor(sig1))
+    FstMax = (I*(I-1)-sig1^2+floor(sig1)-2*(I-1)*sig1.frac+(2*I-1)*sig1.frac^2)/(I*(I-1)-sig1^2-floor(sig1)+2*sig1-sig1.frac^2)
+  }
+
+    Fst =
+      (sum(Q^2)/I-sum(colSums(Q/I)^2))/
+      (1-sum(colSums(Q/I)^2))
+
+    ratio = Fst/FstMax
   }
 
     Fst =
