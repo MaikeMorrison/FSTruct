@@ -143,13 +143,6 @@ Q_stat <- function(Q, K){
     ratio = Fst/FstMax
   }
 
-    Fst =
-      (sum(Q^2)/I-sum(colSums(Q/I)^2))/
-      (1-sum(colSums(Q/I)^2))
-
-    ratio = Fst/FstMax
-  }
-
   return(list(Fst = Fst,
               FstMax = FstMax,
               ratio = ratio))
