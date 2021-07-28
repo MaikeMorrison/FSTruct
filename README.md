@@ -41,7 +41,7 @@ You can install the development version from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("MaikeMorrison/fstruct")
+devtools::install_github("MaikeMorrison/FSTruct")
 ```
 
 <!-- ## Example -->
