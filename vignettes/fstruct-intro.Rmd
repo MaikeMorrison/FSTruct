@@ -102,26 +102,26 @@ Q_matrix_name <- data.table::fread("file path to your Q matrix.output")
 ```
 or other functions, such as `read.table()`. 
 
-Note that the default column names of these $Q$ matrices will likely be `V1`, `V2`, `V3`, ... If you wish to give the columns more informative names, use the function `colnames`, listing on the right-hand side your desired column names (the example below uses the same names as `Q_simulate` for $K=2$ ancestral clusters).
+Note that the default column names of these $Q$ matrices will likely be `V1`, `V2`, `V3`, ... If you wish to give the columns more informative names, use the function `colnames`, listing on the right-hand side your desired column names (the example below uses the same names as `Q_simulate` for $K=2$ ancestral clusters):
 ```{r}
 colnames(Q_matrix_name) <- c("rep", "ind", "alpha", "Pop", "spacer", "lambda1", "lambda2")
 ```
 
 Repeat this process for each $Q$ matrix you wish to analyze. 
 
-Alternatively, you can simulate random $Q$ matrices using `Q_simulate`, which draws individuals from a probability distribution called the Dirichlet (for more details on the Dirichlet distribution, see the "Simulation examples" section of *the paper*).  
+Alternatively, $Q$ matrices can be simulated using `Q_simulate`, which draws individuals from a Dirichlet probability distribution (for more details on the Dirichlet distribution, see the "Simulation examples" section of the forthcoming paper by Morrison, Alcala, and Rosenberg).  
 
 The function `Q_simulate` has four parameters:
 
-* `alpha`, a number which controls the variability. Higher values of $\alpha$ result in lower variances across membership coefficients.
+* `alpha`, a number that controls the variability. Higher values of $\alpha$ result in lower variances across membership coefficients.
 
-* `lambda`, a vector which controls the mean membership of each ancestral cluster.
+* `lambda`, a vector that controls the mean membership of each ancestral cluster.
 
-* `rep`, which is how many matrices to simulate.
+* `rep`, the number of matrices to simulate.
 
-* `popsize`, which is how many individuals to put in the $Q$ matrix.
+* `popsize`, the number of individuals to put in the $Q$ matrix.
 
-* `seed`, which is an optional random seed to make results reproducible.
+* `seed`, an optional random seed to make results reproducible.
 
 For this example, I chose to simulate four $Q$ matrices (`A`, `B`, `C`, and `D`), each with 20 individuals and with the same vector of mean membership coefficients, $\lambda = (.75, .25)$. This means that each $Q$ matrix will have 20 rows and, on average, individuals from any of the four matrices will possess three-quarters of their ancestry from the first ancestral cluster, and one-quarter of their ancestry from the second ancestral cluster. 
 
@@ -143,18 +143,14 @@ Here is what matrix `A` looks like:
 knitr::kable(A)
 ```
 
-You can see that its format is very similar to the format of the ADMIXTURE $Q$ matrix above. Importantly, the last $K=2$ columns contain the membership coefficients.
+The format of this $Q$ matrix is very similar to the format of the ADMIXTURE $Q$ matrix above. The last $K=2$ columns contain the membership coefficients.
 
 ## Visualize $Q$ Matrices
 
-I can visualize these matrices using the function `Q_plot`, which has two parameters: a $Q$ matrix (`Q`) and the number of ancestral clusters (`K`).
+We visualize these matrices using the function `Q_plot`, which has two parameters: a $Q$ matrix (`Q`) and the number of ancestral clusters (`K`).
 
 ```{r}
 # Generate and modify a plot for each Q matrix
-
-# arrange(var) sorts the individuals in order of that variable
-# scale_fill_brewer() modifies the color scheme
-# Because Q_plot() outputs a ggplot, you can do lots of modifications!
 
 plot_A <- Q_plot(Q = A %>% arrange(lambda1),
                  K=2) + 
@@ -171,8 +167,16 @@ plot_C <- Q_plot(Q = C %>% arrange(lambda1),
 plot_D <- Q_plot(Q = D %>% arrange(lambda1), 
                  K=2) + 
   ggplot2::scale_fill_brewer("Blues")
+```
 
-# Display them in a grid
+`%>%`, the pipe from dplyr, feeds the value on its left-hand side into the function on its right-hand side. 
+
+`arrange(matrix, var)`, a function from dplyr, sorts the rows in `matrix` according to a column named `var`. Here, I order individuals in each $Q$ matrix according to their value of `lambda1`, but other variables can also be used. Use `colnames(Q_matrix_name)` to see the column names and decide which to sort by. Matrices can also be sorted by multiple columns (e.g., `arrange(matrix, var1, var2)`).
+
+`scale_fill_brewer()`, a function from ggplot2, modifies the color scheme of the plot. Because `Q_plot()` outputs a ggplot, you can do lots of modifications!
+
+```{r}
+# Display these plots in a grid
 cowplot::plot_grid(plot_A, plot_B, plot_C, plot_D,
                    labels = "AUTO", 
                    nrow = 1,
