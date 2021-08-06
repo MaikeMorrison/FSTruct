@@ -4,6 +4,28 @@
 # Q_bootstrap - generate bootstrap Q matrices and related plots and statistics
 # Q_simulate - simulate Q matrices using the Dirichlet distribution
 
+# internal function to check if Q matrices are up to spec
+Q_checker <- function(Q, K, rep){
+  # Check if Q matrix is in STRUCTURE/ADMIXTURE output form, or if it only contains columns of ancestry coefficients
+  # If it is in STRUCTURE/ADMIXTURE output form, extract the ancestry coefficients--the last K columns.
+  if(ncol(Q) > K){
+    Q <- Q[,(ncol(Q)-K+1):ncol(Q)]
+  }
+
+  # check if matrix rows sum to 1
+  sums <- rowSums(Q)
+  if(any(sums != 1)){
+    if(missing(rep)){
+      warning("At least one Q matrix has rows which do not sum to exactly 1. Rounding the sum of each row to 1 by dividing all entries by the sum of the row.")
+    }else{
+      warning(paste0("At least one of the rows of Q matrix number ", rep,
+              " (restricted to the last K columns) does not sum to 1. Rounding the sum of each row to 1 by dividing all entries by the sum of the row."))
+    }
+    Q <- Q/sums
+  }
+  return(Q)
+}
+
 # Q_plot -----------------------------------------------------------------
 #' Plot a Q matrix using ggplot2
 #'
@@ -53,12 +75,8 @@
 #'@importFrom rlang .data
 #' @export
 Q_plot <- function(Q, K){
-  # Check if Q matrix is in STRUCTURE/ADMIXTURE output form, or if it only contains columns of ancestry coefficients
-  # If it is in STRUCTURE/ADMIXTURE output form, extract the ancestry coefficients--the last K columns.
-  if(ncol(Q) > K){
-    Q <- Q[,(ncol(Q)-K+1):ncol(Q)]
-  }
 
+  Q <- Q_checker(Q, K)
   # Generate the data to plot
 
   df <- data.frame(cbind(data.frame(Individuals =1:nrow(Q)),Q)) %>%
@@ -115,9 +133,8 @@ Q_plot <- function(Q, K){
 Q_stat <- function(Q, K){
   # Check if Q matrix is in STRUCTURE/ADMIXTURE output form, or if it only contains columns of ancestry coefficients
   # If it is in STRUCTURE/ADMIXTURE output form, extract the ancestry coefficients--the last K columns.
-  if(ncol(Q) > K){
-    Q <- Q[,(ncol(Q)-K+1):ncol(Q)]
-  }
+  # Check also if the rows sum to 1, and divide matrix by rowsums if not
+  Q <- Q_checker(Q, K)
 
   I=nrow(Q) # Here, I is the number of individuals (number of subpopulations)
   p = colSums(Q) # yields vector of summed allele frequencies across populations
@@ -244,12 +261,7 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed){
     names <- "Q"
 
     # Clean Q matrix - isolate ancestry coefficients
-    if(ncol(matrices) > K){
-      matrices <- matrices[,(ncol(matrices)-K+1):ncol(matrices)]
-      if(sum(rowSums(matrices) != 1)){
-        warning("The rows of the Q matrix (restricted to the last K columns) do not sum to 1.")
-      }
-    }
+    matrices <- Q_checker(matrices, K)
 
     bootstrap_matrices_Q <- list()
     matrix = matrices
@@ -284,14 +296,7 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed){
       matrix = matrices[[m]]
 
       # Check format of matrix
-      if(ncol(matrix) > K){
-        matrix <- matrix[,(ncol(matrix)-K+1):ncol(matrix)]
-      }
-      if(sum(round(rowSums(matrix),3) != 1)){
-        warning(paste0(
-          "At least one of the rows of Q matrix number ", m,
-          " (restricted to the last K columns) does not sum to 1."))
-      }
+      matrix <- Q_checker(Q = matrix, K = K, rep = m)
 
       # Generate bootstrap data sets
       for(replicate in 1:n_replicates){
