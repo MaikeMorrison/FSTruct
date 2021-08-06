@@ -6,13 +6,18 @@
 
 # internal function to check if Q matrices are up to spec
 Q_checker <- function(Q, K, rep){
+  # Check if Q matrix is within a list, and extract if needed
+  if(is.list(Q)){Q <- Q[[1]]}
   # Check if Q matrix is in STRUCTURE/ADMIXTURE output form, or if it only contains columns of ancestry coefficients
   # If it is in STRUCTURE/ADMIXTURE output form, extract the ancestry coefficients--the last K columns.
   if(ncol(Q) > K){
     Q <- Q[,(ncol(Q)-K+1):ncol(Q)]
   }
 
-  # check if matrix rows sum to 1
+  # convert Q matrix entries to numbers
+  Q <- data.matrix(Q)
+
+  # check if matrix rows sum to 1, and give useful warnings if rounding is necessary
   sums <- rowSums(Q)
   if(any(sums != 1)){
     if(missing(rep)){
@@ -21,6 +26,7 @@ Q_checker <- function(Q, K, rep){
       warning(paste0("At least one of the rows of Q matrix number ", rep,
               " (restricted to the last K columns) does not sum to 1. Rounding the sum of each row to 1 by dividing all entries by the sum of the row."))
     }
+    # Normalize each row of the matrix by dividing by the rowsums
     Q <- Q/sums
   }
   return(Q)
@@ -254,14 +260,14 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed){
 
   # Do computations if matrices = a single matrix ---------------------------------------
 
-  if(is.data.frame(matrices) | is.array(matrices)){
+  if(is.data.frame(matrices) | is.array(matrices) | length(matrices)==1){
 
     n_matrix = 1
 
     names <- "Q"
 
     # Clean Q matrix - isolate ancestry coefficients
-    matrices <- Q_checker(matrices, K)
+    matrices <- Q_checker(Q = matrices, K = K)
 
     bootstrap_matrices_Q <- list()
     matrix = matrices
