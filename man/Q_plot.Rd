@@ -4,7 +4,7 @@
 \alias{Q_plot}
 \title{Plot a Q matrix using ggplot2}
 \usage{
-Q_plot(Q, K)
+Q_plot(Q, K, arrange)
 }
 \arguments{
 \item{Q}{A dataframe, matrix, or array representing a Q matrix. Each row
@@ -15,8 +15,11 @@ last \code{K} columns, the rows of this matrix should sum to approximately
 1.}
 
 \item{K}{The number of ancestral clusters in the Q matrix. Each individual
-should have \code{K} membership coefficients. The default color scheme is
-"spectral" from RColorBrewer, which tolerates
+should have \code{K} membership coefficients.}
+
+\item{arrange}{Optional variable controlling horizontal ordering of individuals.
+If \code{arrange = TRUE}, individuals are ordered by the clusters of greatest
+mean membership.
 \code{K} values of 11 or fewer.}
 }
 \value{
@@ -38,20 +41,23 @@ population structure visualization program, see the program
 }
 \examples{
 Q_plot(
-# Make an example matrix of membership coefficients.
-# Each row is an individual. Rows sum to 1.
-Q = matrix(c(.4,.2,.4,
-             .5,.3,.2,
-             .5,.4,.1,
-             .6,.1,.3,
-             .6,.3,.1),
-           nrow = 5,
-           byrow = TRUE),
-           K = 3 # How many ancestry coefficients per individual?
+  # Make an example matrix of membership coefficients.
+  # Each row is an individual. Rows sum to 1.
+  Q = matrix(c(
+    .4, .2, .4,
+    .5, .3, .2,
+    .5, .4, .1,
+    .6, .1, .3,
+    .6, .3, .1
+  ),
+  nrow = 5,
+  byrow = TRUE
+  ),
+ K = 3, # How many ancestry coefficients per individual?
+ arrange = TRUE
 ) +
-# Below are example, optional modifications to the default plot
+  # Below are example, optional modifications to the default plot
   ggplot2::ggtitle("Population A") +
   ggplot2::scale_fill_brewer("Blues") +
   ggplot2::xlab("Individuals")
-
 }

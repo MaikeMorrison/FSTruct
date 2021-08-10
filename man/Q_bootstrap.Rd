@@ -32,38 +32,50 @@ Generates bootstrap replicate Q matrices, computes Fst/FstMax for each bootstrap
 }
 \examples{
 # Use Q_simulate to generate 4 random Q matrices
-A = Q_simulate(alpha = .1,
-               lambda = c(.5, .5),
-               rep = 1,
-               popsize = 20,
-               seed = 1)
+A <- Q_simulate(
+  alpha = .1,
+  lambda = c(.5, .5),
+  rep = 1,
+  popsize = 20,
+  seed = 1
+)
 
-B = Q_simulate(alpha = .1,
-               lambda = c(.5, .5),
-               rep = 1,
-               popsize = 20,
-               seed = 2)
+B <- Q_simulate(
+  alpha = .1,
+  lambda = c(.5, .5),
+  rep = 1,
+  popsize = 20,
+  seed = 2
+)
 
-C = Q_simulate(alpha = 1,
-               lambda = c(.5, .5),
-               rep = 1,
-               popsize = 20,
-               seed = 3)
+C <- Q_simulate(
+  alpha = 1,
+  lambda = c(.5, .5),
+  rep = 1,
+  popsize = 20,
+  seed = 3
+)
 
-D = Q_simulate(alpha = 1,
-               lambda = c(.5, .5),
-               rep = 1,
-               popsize = 20,
-               seed = 4)
+D <- Q_simulate(
+  alpha = 1,
+  lambda = c(.5, .5),
+  rep = 1,
+  popsize = 20,
+  seed = 4
+)
 
 # Draw 100 bootstrap replicates from
 # each of the 4 Q matrices
-bs <- Q_bootstrap(matrices = list(A=A,
-                                  B=B,
-                                  C=C,
-                                  D=D),
-                  n_replicates = 100,
-                  K = 2)
+bs <- Q_bootstrap(
+  matrices = list(
+    A = A,
+    B = B,
+    C = C,
+    D = D
+  ),
+  n_replicates = 100,
+  K = 2
+)
 
 # Access the elements of this list using $.
 # For example....
@@ -84,6 +96,4 @@ bs$plot_violin
 # Fst/FstMax is significantly different from
 # each of the other distributions:
 bs$test_pairwise_wilcox
-
-
 }

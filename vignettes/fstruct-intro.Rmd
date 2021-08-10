@@ -104,7 +104,7 @@ or other functions, such as `read.table()`.
 
 Note that the default column names of these $Q$ matrices will likely be `V1`, `V2`, `V3`, ... If you wish to give the columns more informative names, use the function `colnames`, listing on the right-hand side your desired column names (the example below uses the same names as `Q_simulate` for $K=2$ ancestral clusters):
 ```{r, eval = FALSE}
-colnames(Q_matrix_name) <- c("rep", "ind", "alpha", "Pop", "spacer", "lambda1", "lambda2")
+colnames(Q_matrix_name) <- c("rep", "ind", "alpha", "Pop", "spacer", "q1", "q2")
 ```
 
 Repeat this process for each $Q$ matrix you wish to analyze. 
@@ -152,26 +152,29 @@ We visualize these matrices using the function `Q_plot`, which has two parameter
 ```{r}
 # Generate and modify a plot for each Q matrix
 
-plot_A <- Q_plot(Q = A %>% arrange(lambda1),
+plot_A <- Q_plot(Q = A %>% arrange(q1),
                  K=2) + 
   ggplot2::scale_fill_brewer("Blues")
 
-plot_B <- Q_plot(Q = B %>% arrange(lambda1), 
-                 K=2) + 
+plot_B <- Q_plot(Q = B, 
+                 K=2,
+                 arrange = TRUE) + 
   ggplot2::scale_fill_brewer("Blues")
 
-plot_C <- Q_plot(Q = C %>% arrange(lambda1), 
-                 K=2) + 
+plot_C <- Q_plot(Q = C, 
+                 K=2,
+                 arrange = TRUE) + 
   ggplot2::scale_fill_brewer("Blues")
 
-plot_D <- Q_plot(Q = D %>% arrange(lambda1), 
-                 K=2) + 
+plot_D <- Q_plot(Q = D, 
+                 K=2,
+                 arrange = TRUE) + 
   ggplot2::scale_fill_brewer("Blues")
 ```
 
 `%>%`, the pipe from dplyr, feeds the value on its left-hand side into the function on its right-hand side. 
 
-`arrange(matrix, var)`, a function from dplyr, sorts the rows in `matrix` according to a column named `var`. Here, I order individuals in each $Q$ matrix according to their value of `lambda1`, but other variables can also be used. Use `colnames(Q_matrix_name)` to see the column names and decide which to sort by. Matrices can also be sorted by multiple columns (e.g., `arrange(matrix, var1, var2)`).
+`arrange(matrix, var)`, a function from dplyr, sorts the rows in `matrix` according to a column named `var`. Here, I order individuals in each $Q$ matrix according to their value of `q1`, but other variables can also be used. Use `colnames(Q_matrix_name)` to see the column names and decide which to sort by. Matrices can also be sorted by multiple columns (e.g., `arrange(matrix, var1, var2)`).
 
 `scale_fill_brewer()`, a function from ggplot2, modifies the color scheme of the plot. Because `Q_plot()` outputs a ggplot, you can do lots of modifications!
 

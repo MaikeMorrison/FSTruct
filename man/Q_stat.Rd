@@ -33,16 +33,18 @@ Fst/FstMax is a statistic which takes a value of 0 when every individual in a po
 }
 \examples{
 Q_stat(
-# Make an example matrix of membership coefficients.
-# Each row is an individual. Rows sum to 1.
-Q = matrix(c(.4,.2,.4,
-             .5,.3,.2,
-             .5,.4,.1,
-             .6,.1,.3,
-             .6,.3,.1),
-           nrow = 5,
-           byrow = TRUE),
-           K = 3) # How many ancestry coefficients per individual?
-
-
+  # Make an example matrix of membership coefficients.
+  # Each row is an individual. Rows sum to 1.
+  Q = matrix(c(
+    .4, .2, .4,
+    .5, .3, .2,
+    .5, .4, .1,
+    .6, .1, .3,
+    .6, .3, .1
+  ),
+  nrow = 5,
+  byrow = TRUE
+  ),
+  K = 3
+) # How many ancestry coefficients per individual?
 }

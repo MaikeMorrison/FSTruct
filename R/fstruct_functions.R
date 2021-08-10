@@ -1,10 +1,16 @@
 # THIS FILE CONTAINS:
+# Q_checker - internal function to clean input Q matrices
 # Q_plot - generate a population structure plot using ggplot2
-# Q_stat - generate fst, fstmax, and Fst/FstMax for a Q matrix
+# Q_stat - compute fst, fstmax, and Fst/FstMax for a Q matrix
 # Q_bootstrap - generate bootstrap Q matrices and related plots and statistics
 # Q_simulate - simulate Q matrices using the Dirichlet distribution
 
-# internal function to check if Q matrices are up to spec
+
+# Q_checker ------------------------------------------------------------------
+# An internal function to check if Q matrices are up to spec and fix any issues automatically.
+# Q - a Q matrix provided as input to another function
+# K - the number of ancestral clusters
+# rep - an optional parameter used if Q matrix is one of a list, in order to provide more useful warning messages
 Q_checker <- function(Q, K, rep) {
   # Check if Q matrix is within a list, and extract if needed
   if (is.list(Q) && !is.data.frame(Q) && !is.array(Q)) {
@@ -19,8 +25,11 @@ Q_checker <- function(Q, K, rep) {
   # convert Q matrix entries to numbers
   Q <- data.matrix(Q)
 
+  # Name Q matrix columns q1, q2, ..., qK
+  colnames(Q) <- paste0("q",1:K)
+
   # check if matrix rows sum to 1, and give useful warnings if rounding is necessary
-  sums <- rowSums(Q) %>% round(10)
+  sums <- rowSums(Q) %>% round(5)
   if (any(sums != 1)) {
     if (missing(rep)) {
       warning("At least one Q matrix has rows which do not sum to exactly 1. Rounding the sum of each row to 1 by dividing all entries by the sum of the row.")
@@ -58,8 +67,7 @@ Q_checker <- function(Q, K, rep) {
 #'   last \code{K} columns, the rows of this matrix should sum to approximately
 #'   1.
 #' @param K The number of ancestral clusters in the Q matrix. Each individual
-#'   should have \code{K} membership coefficients. The default color scheme is
-#'   "spectral" from RColorBrewer, which tolerates
+#'   should have \code{K} membership coefficients.
 #' @param arrange Optional variable controlling horizontal ordering of individuals.
 #'   If \code{arrange = TRUE}, individuals are ordered by the clusters of greatest
 #'   mean membership.
@@ -80,23 +88,35 @@ Q_checker <- function(Q, K, rep) {
 #'   nrow = 5,
 #'   byrow = TRUE
 #'   ),
-#'   K = 3 # How many ancestry coefficients per individual?
+#'  K = 3, # How many ancestry coefficients per individual?
+#'  arrange = TRUE
 #' ) +
 #'   # Below are example, optional modifications to the default plot
 #'   ggplot2::ggtitle("Population A") +
 #'   ggplot2::scale_fill_brewer("Blues") +
 #'   ggplot2::xlab("Individuals")
 #' @importFrom dplyr %>%
+#' @importFrom dplyr arrange
+#' @importFrom dplyr select
 #' @importFrom rlang .data
 #' @export
 Q_plot <- function(Q, K, arrange) {
   # Clean the matrices for plotting:
   Q <- Q_checker(Q = Q, K = K)
 
-  # Re-order individuals if arrange == TRUE
-  if (arrange == TRUE) {
-    clustermeans <- colMeans(Q) %>% sort()
-    Q <- Q %>% arrange(names(clustermeans))
+  # Generate the data to plot
+  df <- data.frame(cbind(data.frame(Individuals = 1:nrow(Q)), Q)) %>%
+    tidyr::pivot_longer(cols = 2:(ncol(Q) + 1))
+  df$name <- factor(df$name, levels = unique(df$name) %>% rev())
+
+    # Re-order individuals if arrange == TRUE
+  if (!missing(arrange)) {
+    if(arrange == TRUE){
+    clustermeans <- colMeans(Q) %>% sort() %>% rev
+    Q <- data.frame(Q) %>%
+      dplyr::arrange(get(names(clustermeans))) %>%
+      dplyr::select(names(clustermeans))
+    }
   }
 
   # Generate the data to plot
@@ -110,7 +130,6 @@ Q_plot <- function(Q, K, arrange) {
     ggplot2::aes(fill = .data$name, y = .data$value, x = .data$Individuals)
   ) +
     ggplot2::geom_bar(position = "stack", stat = "identity", width = 1) +
-    ggplot2::scale_fill_brewer(palette = "Spectral") +
     ggplot2::theme_void() +
     ggplot2::ylab("") +
     ggplot2::theme(legend.position = "none")
@@ -485,7 +504,7 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed) {
 # Q_simulate ----------------------------------------
 #' Simulate one or more Q matrices using the Dirichlet distribution
 #'
-#' Simulates Q matrices by drawing vectors of membership coefficients from a Dirichlet distrubtion parameterized by two variables: \eqn{\alpha}, which controls variability, and \eqn{\lambda=(\lambda_1, \lambda_2, ...., \lambda_K)} which controls the mean of each of the K ancestry coefficients.
+#' Simulates Q matrices by drawing vectors of membership coefficients from a Dirichlet distribution parameterized by two variables: \eqn{\alpha}, which controls variability, and \eqn{\lambda=(\lambda_1, \lambda_2, ...., \lambda_K)} which controls the mean of each of the K ancestry coefficients.
 #'
 #' @param alpha A number that sets the variability of the membership coefficients. The variance of coefficient k is Var[x_k] = \eqn{\lambda_k/(\alpha+1)}. Larger values of \eqn{\alpha} lead to lower variability.
 #' @param lambda A vector that sets the mean membership of each ancestral cluster across the population. The vector should sum to 1.
@@ -500,7 +519,7 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed) {
 #' \item \code{alpha}: The alpha value used to simulate the Q matrix.
 #' \item \code{Pop}: alpha_rep (where alpha and rep are the columns described above). Serves as a unique identifier for each Q matrix (useful if running simulations with many different values of \eqn{\alpha}).
 #' \item \code{spacer}: a repeated ":" to make simulated Q matrices match output of population structure inference software.
-#' \item \code{lambda1, lambda2, etc.}: Membership coefficients (sum to 1).
+#' \item \code{q1, q2, etc.}: Membership coefficients (sum to 1).
 #' }
 #'
 #' @examples
@@ -510,8 +529,8 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed) {
 #' # On average these individuals have
 #' # mean ancestry (1/2, 1/4, 1/4)
 #' # from each of 3 ancestral clusters.
-#' # The variance of each cluster x_i is
-#' # Var[x_i] = lambda_i/(alpha + 1)
+#' # The variance of each cluster i is
+#' # Var[q_i] = lambda_i(1-lambda_i)/(alpha + 1)
 #' # Here lambda_1 = 1/2,
 #' #      lambda_2 = lambda_3 = 1/4
 #'
@@ -565,9 +584,9 @@ Q_simulate <- function(alpha, lambda, rep, popsize, seed) {
       ind = rep(1:popsize, K),
       lambda = (sapply(
         X = 1:K,
-        FUN = function(x) paste0("lambda", x)
+        FUN = function(x) paste0("q", x)
       ) %>%
-        lapply(function(lambda) rep(lambda, popsize)) %>%
+        lapply(function(q) rep(q, popsize)) %>%
         unlist())
     ) %>%
     tidyr::pivot_longer(
@@ -604,9 +623,9 @@ Q_simulate <- function(alpha, lambda, rep, popsize, seed) {
               ind = rep(1:popsize, K),
               lambda = (sapply(
                 X = 1:K,
-                FUN = function(x) paste0("lambda", x)
+                FUN = function(x) paste0("q", x)
               ) %>%
-                lapply(function(lambda) rep(lambda, popsize)) %>%
+                lapply(function(q) rep(q, popsize)) %>%
                 unlist())
             ) %>%
             tidyr::pivot_longer(
@@ -631,7 +650,7 @@ Q_simulate <- function(alpha, lambda, rep, popsize, seed) {
       Pop = paste(round(alpha, 3), rep, sep = "_") %>% as.factor(),
       rep = as.factor(rep),
       spacer = ":",
-      .before = .data$lambda1
+      .before = .data$q1
     ) %>%
     dplyr::arrange(rep, .data$Pop, .data$ind)
   return(Q)

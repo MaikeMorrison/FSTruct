@@ -25,7 +25,7 @@ A data frame containing the simulated Q matrices. Each row represents a single s
 \item \code{alpha}: The alpha value used to simulate the Q matrix.
 \item \code{Pop}: alpha_rep (where alpha and rep are the columns described above). Serves as a unique identifier for each Q matrix (useful if running simulations with many different values of \eqn{\alpha}).
 \item \code{spacer}: a repeated ":" to make simulated Q matrices match output of population structure inference software.
-\item \code{lambda1, lambda2, etc.}: Membership coefficients (sum to 1).
+\item \code{q1, q2, etc.}: Membership coefficients (sum to 1).
 }
 }
 \description{
@@ -38,15 +38,16 @@ Simulates Q matrices by drawing vectors of membership coefficients from a Dirich
 # On average these individuals have
 # mean ancestry (1/2, 1/4, 1/4)
 # from each of 3 ancestral clusters.
-# The variance of each cluster x_i is
-# Var[x_i] = lambda_i/(alpha + 1)
+# The variance of each cluster i is
+# Var[q_i] = lambda_i(1-lambda_i)/(alpha + 1)
 # Here lambda_1 = 1/2,
 #      lambda_2 = lambda_3 = 1/4
 
-Q_list <- Q_simulate(alpha = 1,
-                     lambda = c(1/2, 1/4, 1/4),
-                     rep = 100,
-                     popsize = 50,
-                     seed = 1)
-
+Q_list <- Q_simulate(
+  alpha = 1,
+  lambda = c(1 / 2, 1 / 4, 1 / 4),
+  rep = 100,
+  popsize = 50,
+  seed = 1
+)
 }
