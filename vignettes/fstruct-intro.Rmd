@@ -100,7 +100,7 @@ To begin the analysis, read one or more $Q$ matrices into R. For each $Q$ matrix
 ```{r, eval = FALSE}
 Q_matrix_name <- data.table::fread("file path to your Q matrix.output")
 ```
-or other functions, such as `read.table()`. 
+or other functions, such as `read.table()`.
 
 Note that the default column names of these $Q$ matrices will likely be `V1`, `V2`, `V3`, ... If you wish to give the columns more informative names, use the function `colnames`, listing on the right-hand side your desired column names (the example below uses the same names as `Q_simulate` for $K=2$ ancestral clusters):
 ```{r, eval = FALSE}
@@ -125,7 +125,7 @@ The function `Q_simulate` has four parameters:
 
 For this example, I chose to simulate four $Q$ matrices (`A`, `B`, `C`, and `D`), each with 20 individuals and with the same vector of mean membership coefficients, $\lambda = (.75, .25)$. This means that each $Q$ matrix will have 20 rows and, on average, individuals from any of the four matrices will possess three-quarters of their ancestry from the first ancestral cluster, and one-quarter of their ancestry from the second ancestral cluster. 
 
-I chose to simulate matrices `A` and `B` using $\alpha = 0.1$, which results in fairly high variability across membership coefficients, and matrices `C` and `D` using $\alpha = 1$, which results in lower variability. Properties of the Dirichlet distribution tell us that the variance of the $k^{th}$ ancestral cluster, $x_k$, is $Var[x_k] = \lambda_k(1-\lambda_k)/(\alpha+1)$. It follows that, for matrices `A` and `B`, $Var[x_1] = Var[x_2]=.75\times.25/(.1+1) \approx 0.17$. For matrices `C` and `D`, $Var[x_1] = Var[x_2] = .75\times.25/(1+1) \approx 0.09$. 
+I chose to simulate matrices `A` and `B` using $\alpha = 0.1$, which results in fairly high variability across membership coefficients, and matrices `C` and `D` using $\alpha = 10$, which results in lower variability. Properties of the Dirichlet distribution tell us that the variance of the $k^{th}$ ancestral cluster, $q_k$, is $Var[q_k] = \lambda_k(1-\lambda_k)/(\alpha+1)$. It follows that, for matrices `A` and `B`, $Var[q_1] = Var[q_2]=.75\times.25/(.1+1) \approx 0.17$. For matrices `C` and `D`, $Var[q_1] = Var[q_2] = .75\times.25/(10+1) \approx 0.017$. 
 
 
 ```{r}
@@ -133,9 +133,9 @@ A = Q_simulate(alpha = .1, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 1
 
 B = Q_simulate(alpha = .1, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 2)
 
-C = Q_simulate(alpha = 1, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 3)
+C = Q_simulate(alpha = 10, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 3)
 
-D = Q_simulate(alpha = 1, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 4)
+D = Q_simulate(alpha = 10, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 4)
 ```
 
 Here is what matrix `A` looks like:
@@ -147,7 +147,7 @@ The format of this $Q$ matrix is very similar to the format of the ADMIXTURE $Q$
 
 ## Visualize $Q$ Matrices
 
-We visualize these matrices using the function `Q_plot`, which has two parameters: a $Q$ matrix (`Q`) and the number of ancestral clusters (`K`).
+We visualize these matrices using the function `Q_plot`, which has two required parameters: a $Q$ matrix (`Q`) and the number of ancestral clusters (`K`). The third parameter, `arrange`, is optional. If `arrange = TRUE`, the individuals' are horizontally ordered by the cluster with the greatest mean membership. Below, we accomplish this ordering manually for plot A, and use `arrange = TRUE` for all subsequent plots. These two methods accomplish the same ordering.
 
 ```{r}
 # Generate and modify a plot for each Q matrix
@@ -176,7 +176,7 @@ plot_D <- Q_plot(Q = D,
 
 `arrange(matrix, var)`, a function from dplyr, sorts the rows in `matrix` according to a column named `var`. Here, I order individuals in each $Q$ matrix according to their value of `q1`, but other variables can also be used. Use `colnames(Q_matrix_name)` to see the column names and decide which to sort by. Matrices can also be sorted by multiple columns (e.g., `arrange(matrix, var1, var2)`).
 
-`scale_fill_brewer()`, a function from ggplot2, modifies the color scheme of the plot. Because `Q_plot()` outputs a ggplot, you can do lots of modifications!
+`scale_fill_brewer()`, a function from ggplot2, modifies the color scheme of the plot. Because `Q_plot()` outputs a ggplot object, you can do lots of modifications!
 
 ```{r}
 # Display these plots in a grid
@@ -187,7 +187,9 @@ cowplot::plot_grid(plot_A, plot_B, plot_C, plot_D,
 ```
 
 
-We observe that matrices A and B are visually similar, with most individuals from each matrix possessing all of their ancestry in just one of the two clusters (here, all light blue or all dark blue). These matrices have quite high variability--the maximum variability case would have just 0 or 1 individual with membership from both clusters. Matrices C and D, on the other hand, are mostly comprised of individuals with membership from both clusters. These matrices are closer to the minimum variability case, in which every individual's membership coefficients are the same as the mean (here, 3/4 dark blue and 1/4 light blue). 
+We observe that matrices A and B are visually similar, with most individuals from each matrix possessing all of their ancestry in just one of the two clusters (here, all light blue or all dark blue). Matrices C and D, on the other hand, are comprised of individuals with some ancestry from each cluster.
+
+For a $Q$ matrix, the maximum variability case would have just 0 or 1 individual with membership from both clusters.  These matrices are closer to the minimum variability case, in which every individual's membership coefficients are the same as the mean (here, 3/4 dark blue and 1/4 light blue). 
 
 While we can build intuition about what high and low variability $Q$ matrices look like, it is often still helpful to statistically quantify this variability.
 
