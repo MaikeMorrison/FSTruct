@@ -238,11 +238,11 @@ The output of `Q_bootstrap`, which I named `bootstrap`, is a list of the followi
 
 * `statistics`: A dataframe containing the value of $F_{ST}/F_{ST}^{max}$ for each bootstrap replicate matrix
 
-* `plot_boxplot`, `plot_violin`, `plot_ecdf`: A box, violin, or empirical cumulative distribution function (ECDF) plot of the bootstrap distribution of $F_{ST}/F_{ST}^{max}$ for each $Q$ matrix
+* `plot_boxplot`, `plot_violin`, `plot_ecdf`: A box plot, violin plot, or empirical cumulative distribution function (ECDF) plot of the bootstrap distribution of $F_{ST}/F_{ST}^{max}$ for each $Q$ matrix
 
-* `test_kruskal_wallis`: The results of a Kruksal-Wallis test, which tests the identity of all provided bootstrap means.
+* `test_kruskal_wallis`: The results of a Kruksal-Wallis test, which tests the identity of all provided bootstrap means
 
-* `test_pairwise_wilcox`: The results of a Wilcoxon rank-sum test, which tests the identity of pairwise bootstrap means for each pair of matrices.
+* `test_pairwise_wilcox`: The results of a Wilcoxon rank-sum test, which tests the identity of pairwise bootstrap means for each pair of matrices
 
 
 Included in the output are three options for visualizing the bootstrap distributions: a box plot, a violin plot, and an empirical cumulative distribution plot. All are ggplot objects and can be modified in many ways using tools from the package `ggplot2`. 
@@ -271,7 +271,9 @@ bootstrap$test_kruskal_wallis
 bootstrap$test_pairwise_wilcox
 ```
 
-The results of these tests support the claim that significant differences exist in the variability of all pairs of matrices except the pair containing matrices `C` and `D`. 
+**The results of these tests support the claim that significant differences exist in the variability of all pairs of matrices except the pair containing matrices `C` and `D`.**
+
+You cannot make comparisons if only one $Q$ matrix is provided. If only one matrix was provided to `Q_bootstrap`, the entries `test_kruskal_wallis` and `test_pairwise_wilcox` will contain the text "This statistical test can only be performed if a list of matrices is provided." instead of the results of a statistical test.
 
 
 ## Final Thoughts
