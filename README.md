@@ -37,8 +37,7 @@ Alcala, and Noah Rosenberg.
 
 <!-- ``` -->
 
-You can install the development version from
-[GitHub](https://github.com/) with:
+You can install this package from GitHub with:
 
 ``` r
 # install.packages("devtools")
@@ -47,8 +46,8 @@ devtools::install_github("MaikeMorrison/FSTruct")
 
 ## Usage
 
-**For a step-by-step guide to this package, read this [introductory
-vignette](https://maikemorrison.com/files/fstruct-intro).**
+For a step-by-step guide to this package, read the [introductory
+vignette](https://maikemorrison.com/files/fstruct-intro).
 
 <!-- ## Example -->
 
