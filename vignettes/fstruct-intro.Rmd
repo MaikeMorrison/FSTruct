@@ -187,11 +187,11 @@ cowplot::plot_grid(plot_A, plot_B, plot_C, plot_D,
 ```
 
 
-We observe that matrices A and B are visually similar, with most individuals from each matrix possessing all of their ancestry in just one of the two clusters (here, all light blue or all dark blue). Matrices C and D, on the other hand, are comprised of individuals with some ancestry from each cluster.
+We observe that matrices A and B are visually similar, with most individuals from each matrix possessing all of their ancestry in just one of the two clusters (here, all light blue or all dark blue). For a $Q$ matrix with two ancestral clusters, the maximum variability case occurs when every individual (or all but one) has a membership vector of $(0,1)$ or $(1,0)$ (possessing all of its ancestry in just one of the two clusters).  Matrices A and B are close to this maximum case, as they contain just a few individuals with ancestry in multiple clusters.
 
-For a $Q$ matrix, the maximum variability case would have just 0 or 1 individual with membership from both clusters.  These matrices are closer to the minimum variability case, in which every individual's membership coefficients are the same as the mean (here, 3/4 dark blue and 1/4 light blue). 
+Matrices C and D, on the other hand, are comprised of individuals with some ancestry from each cluster. These matrices are closer to the minimum variability case, in which every individual's membership coefficients are the same as the mean (here, 3/4 dark blue and 1/4 light blue). 
 
-While we can build intuition about what high and low variability $Q$ matrices look like, it is often still helpful to statistically quantify this variability.
+We have now built intuition about what high and low variability $Q$ matrices look like. The statistic $F_{ST}/F_{ST}^{max}$ quantifies this variability.
 
 ## Calculate the variability of each $Q$ matrix
 
@@ -204,15 +204,15 @@ Q_stat(Q = C, K = 2)
 Q_stat(Q = D, K = 2)
 ```
 
-For each matrix, the function `Q_stat` returns $F_{ST}$, $F_{ST}^{max}$, and their ratio $(F_{ST}/F_{ST}^{max})$. Readers with a population genetics background may be familiar with the statistic $F_{ST}$, which is conventionally used to quantify variability in allele frequencies among a collection of subpopulations. Here, we use this statistic to quantify the variability in membership coefficients among a collection of individuals. (See the methods section of *the paper* for a more thorough discussion of this analogy.) Importantly, when the $Q$ matrix contains few individuals, or the mean membership of the most prevalent ancestral cluster is close to $1/K$ (the minimum value) or 1 (the maximum value), the maximum possible value of $F_{ST}$ $(F_{ST}^{max})$ can be much less than 1. For this reason, we use the normalized statistic, $F_{ST}/F_{ST}^{max}$, which always ranges between 0 and 1, and can thus be used to compare the variability of multiple $Q$ matrices. 
+For each matrix, the function `Q_stat` returns $F_{ST}$, $F_{ST}^{max}$, and their ratio $(F_{ST}/F_{ST}^{max})$. In population genetics, the statistic $F_{ST}$ is conventionally used to quantify variability in allele frequencies among a collection of subpopulations. Here, we use this statistic to quantify the variability in membership coefficients among a collection of individuals. (See the methods section of *the paper* for a more thorough discussion of this analogy.) Importantly, when the $Q$ matrix contains few individuals, or the mean membership of the most prevalent ancestral cluster is close to $1/K$ (the minimum value) or 1 (the maximum value), the maximum possible value of $F_{ST}$ $(F_{ST}^{max})$ can be much less than 1. For this reason, we use the normalized statistic, $F_{ST}/F_{ST}^{max}$, which always ranges between 0 and 1, and can thus be used to compare the variability of multiple $Q$ matrices. 
 
-We observe from the results of `Q_stat` that matrices `A` and `B` have values of $F_{ST}/F_{ST}^{max}$ greater than 0.8, while matrices `C` and `D` have values close to 0.5. Is the similarity between `C` and `D` the result of random chance? Are the differences in variability between matrices `A` and `B` statistically significant?
+We observe from the results of `Q_stat` that matrices `A` and `B` have values of $F_{ST}/F_{ST}^{max}$ greater than 0.8, whereas matrices `C` and `D` have values close to 0.5. Is the similarity between `C` and `D` the result of random chance? Are the differences in variability between matrices `A` and `B` statistically significant?
 
-To answer these questions, we employ a method called [bootstrapping](https://en.wikipedia.org/wiki/Bootstrapping_(statistics)). 
+To answer these questions, we employ  [bootstrapping](https://en.wikipedia.org/wiki/Bootstrapping_(statistics)). 
 
 ## Generate & analyze bootstrap distributions of $F_{ST}/F_{ST}^{max}$ for each matrix
 
-A bootstrap replicate of a $Q$ matrix is a second matrix with the same dimensions whose rows were drawn with replacement from those of the original matrix. By generating many bootstrap replicate matrices, and computing $F_{ST}/F_{ST}^{max}$ for each, we generate a bootstrap distribution of $F_{ST}/F_{ST}^{max}$. This bootstrap distribution is an estimate of the sampling distribution (the distribution attained by drawing multiple $Q$ matrices from the full population). We can perform statistical tests of whether the bootstrap distributions are identical in order to draw conclusions about whether the original $Q$ matrices have significantly different variabilties.
+A bootstrap replicate of a $Q$ matrix is a second matrix with the same dimensions whose rows were drawn with replacement from those of the original matrix. By generating many bootstrap replicate matrices and computing $F_{ST}/F_{ST}^{max}$ for each, we generate a bootstrap distribution of $F_{ST}/F_{ST}^{max}$. This bootstrap distribution is an estimate of the sampling distribution (the distribution obtained by drawing multiple $Q$ matrices from the full population). We can perform statistical tests of identity of the bootstrap means to draw conclusions about whether the original $Q$ matrices have significantly different variabilities.
 
 To generate a bootstrap distribution for the four simulated $Q$ matrices, I used the function `Q_bootstrap`, which has four parameters: 
 
@@ -232,17 +232,17 @@ bootstrap <- Q_bootstrap(matrices = list(A = A, B = B, C = C, D = D),
                   seed = 1)
 ```
 
-The output of `Q_bootstrap`, which I named `bootstrap`, is a list of objects such as:
-
-* `statistics`: A dataframe containing the value of $F_{ST}/F_{ST}^{max}$ for each bootstrap replicate matrix
+The output of `Q_bootstrap`, which I named `bootstrap`, is a list of the following objects:
 
 * `bootstrap_replicates`: A list of bootstrap replicate matrices for each $Q$ matrix provided
 
-* `plot_boxplot`: A box plot of the bootstrap distribution of $F_{ST}/F_{ST}^{max}$ for each $Q$ matrix
+* `statistics`: A dataframe containing the value of $F_{ST}/F_{ST}^{max}$ for each bootstrap replicate matrix
 
-* `test_pairwise_wilcox`: The results of a Wilcoxon rank-sum test, which tests whether each pairwise combination of bootstrap distributions is identical.
+* `plot_boxplot`, `plot_violin`, `plot_ecdf`: A box, violin, or empirical cumulative distribution function (ECDF) plot of the bootstrap distribution of $F_{ST}/F_{ST}^{max}$ for each $Q$ matrix
 
-* etc.
+* `test_kruskal_wallis`: The results of a Kruksal-Wallis test, which tests the identity of all provided bootstrap means.
+
+* `test_pairwise_wilcox`: The results of a Wilcoxon rank-sum test, which tests the identity of pairwise bootstrap means for each pair of matrices.
 
 
 Included in the output are three options for visualizing the bootstrap distributions: a box plot, a violin plot, and an empirical cumulative distribution plot. All are ggplot objects and can be modified in many ways using tools from the package `ggplot2`. 
@@ -259,9 +259,9 @@ cowplot::plot_grid(bootstrap$plot_boxplot + ggplot2::ggtitle("Box Plot"),
 
 Comparing these distributions by eye, it seems like the bootstrap distributions of matrices `A` and `B` are each quite different from all of the other matrices. `C` and `D`, on the other hand, seem quite similar to each other. Rather than relying on our intuition, we can statistically test the similarity of these distributions. Included in the output of `Q_bootstrap` are the output of two such tests:
 
-* The Kruskal-Wallis rank sum test determines if there are statistically significant differences among a collection of two or more distributions. Its output includes a chi-squared statistic and a p-value.
+* The Kruskal-Wallis test determines if statistically significant differences exist among a collection of two or more distributions. Its output includes a chi-squared statistic and a p-value.
 
-* The Wilcoxon rank sum test looks at *every pairwise combination of distributions*, and for each determines if there is a statistically significant difference between the two distributions. Its output is a matrix of p-values, one for each pair of distributions.
+* The Wilcoxon rank sum test looks at *every pairwise combination of distributions*, and for each determines if a statistically significant difference exists between the two distributions. Its output is a matrix of p-values, one for each pair of distributions.
 
 For both tests, the null hypothesis is that the distributions are the same. 
 
@@ -271,10 +271,10 @@ bootstrap$test_kruskal_wallis
 bootstrap$test_pairwise_wilcox
 ```
 
-The results of these tests support that there are significant differences in the variability of all pairs of matrices except for between matrices `C` and `D`. 
+The results of these tests support the claim that significant differences exist in the variability of all pairs of matrices except the pair containing matrices `C` and `D`. 
 
 
 ## Final Thoughts
 
-This concludes the introduction to the package FSTruct--we hope you found it helpful. For more information, see *the paper*, *the package documentation*, or in the R console type `?FSTruct::Q_...` to read the documentation for particular functions (e.g. `?FSTruct::Q_bootstrap`). 
+This concludes the introduction to the package FSTruct--we hope you found it helpful. For more information, see *the paper* or in the R console type `?FSTruct::Q_...` to read the documentation for particular functions (e.g. `?FSTruct::Q_bootstrap`). 
 
