@@ -24,7 +24,8 @@ The package includes four functions:
   - `Q_simulate` generates one or more Q matrices using the Dirichlet
     distribution.
 
-This package accompanies (insert paper citation here).
+This package accompanies a forthcoming paper by Maike Morrison, Nicolas
+Alcala, and Noah Rosenberg.
 
 ## Installation
 
@@ -43,6 +44,11 @@ You can install the development version from
 # install.packages("devtools")
 devtools::install_github("MaikeMorrison/FSTruct")
 ```
+
+## Usage
+
+**For a step-by-step guide to this package, read this [introductory
+vignette](https://maikemorrison.com/files/fstruct-intro).**
 
 <!-- ## Example -->
 

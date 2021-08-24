@@ -273,10 +273,10 @@ bootstrap$test_pairwise_wilcox
 
 **The results of these tests support the claim that significant differences exist in the variability of all pairs of matrices except the pair containing matrices `C` and `D`.**
 
-You cannot make comparisons if only one $Q$ matrix is provided. If only one matrix was provided to `Q_bootstrap`, the entries `test_kruskal_wallis` and `test_pairwise_wilcox` will contain the text "This statistical test can only be performed if a list of matrices is provided." instead of the results of a statistical test.
+You cannot make comparisons if only one $Q$ matrix is provided. If only one matrix was provided to `Q_bootstrap`, the entries `test_kruskal_wallis` and `test_pairwise_wilcox` will contain the text *"This statistical test can only be performed if a list of matrices is provided."* instead of the results of a statistical test.
 
 
 ## Final Thoughts
 
-This concludes the introduction to the package FSTruct--we hope you found it helpful. For more information, see *the paper* or in the R console type `?FSTruct::Q_...` to read the documentation for particular functions (e.g. `?FSTruct::Q_bootstrap`). 
+This concludes the introduction to the package FSTruct--we hope you found it helpful. For more information, see the forthcoming paper by Maike Morrison, Nicolas Alcala, and Noah Rosenberg. Or, in the R console, type `?FSTruct::Q_...` to read the documentation for particular functions (e.g. `?FSTruct::Q_bootstrap`). 
 
