@@ -61,13 +61,13 @@ Q_checker <- function(Q, K, rep) {
 #' \emph{\href{https://rosenberglab.stanford.edu/distruct.html}{distruct}}.
 #'
 #' @param Q A dataframe, matrix, or array representing a Q matrix. Each row
-#'   represents an individual and the last \code{K} columns contain individual
+#'   represents an individual, and the last \code{K} columns contain individual
 #'   membership coefficients. The first few columns may contain information not
 #'   relevant to this plot; their inclusion is optional. When restricted to the
-#'   last \code{K} columns, the rows of this matrix should sum to approximately
+#'   last \code{K} columns, the rows of this matrix must sum to approximately
 #'   1.
 #' @param K The number of ancestral clusters in the Q matrix. Each individual
-#'   should have \code{K} membership coefficients.
+#'   must have \code{K} membership coefficients.
 #' @param arrange Optional variable controlling horizontal ordering of individuals.
 #'   If \code{arrange = TRUE}, individuals are ordered by the clusters of greatest
 #'   mean membership.
@@ -142,21 +142,21 @@ Q_plot <- function(Q, K, arrange) {
 #'
 #' This function computes a statistical measure of ancestry variability, Fst/FstMax, for a Q matrix, the default output of population structure inference software programs such as \href{https://web.stanford.edu/group/pritchardlab/structure.html}{STRUCTURE} and \href{http://dalexander.github.io/admixture/index.html}{ADMIXTURE}. The function returns a named list containing the ratio Fst/FstMax as well as the values of Fst and FstMax.
 #'
-#'  Fst/FstMax is a statistic which takes a value of 0 when every individual in a population has identical ancestry, and a value of 1 when the ancestry is maximally variable (see *our paper* for more details). It is based on the population differentiation statistic Fst which, in its traditional application, is used to measure variability in allele frequencies
+#'  Fst/FstMax is a statistic that takes a value of 0 when every individual in a population has identical ancestry, and a value of 1 when the ancestry is maximally variable (see *our paper* for more details). It is based on the population differentiation statistic Fst which, in its traditional application, is used to measure variability in allele frequencies
 #'
 #' @param Q A dataframe, matrix, or array representing a Q matrix. Each row
 #'   represents an individual and the last \code{K} columns contain individual
 #'   membership coefficients. The first few columns may contain information not
 #'   relevant to this plot; their inclusion is optional. When restricted to the
-#'   last \code{K} columns, the rows of this matrix should sum to approximately
+#'   last \code{K} columns, the rows of this matrix must sum to approximately
 #'   1.
 #' @param K The number of ancestral clusters in the Q matrix. Each individual
-#'   should have \code{K} membership coefficients.
+#'   must have \code{K} membership coefficients.
 #' @return A named list of containing the following entries:
 #' \itemize{
-#' \item  \code{Fst}: Fst computed as if each individual were a population, and each ancestral cluster were an allele.
+#' \item  \code{Fst}: Fst computed as if each individual is a population, and each ancestral cluster is an allele.
 #' \item \code{FstMax}: The maximum value of Fst (for fixed frequency of the most frequent allele, or, in the analogy, the membership of the most prevalent ancestral cluster).
-#' \item \code{ratio}: The ratio of Fst/FstMax. We recommend that this statistic is used to quantify ancestry variability and compare the variability of two or more Q matrices.
+#' \item \code{ratio}: The ratio Fst/FstMax. We recommend that this statistic be used to quantify ancestry variability and to compare the variability of two or more Q matrices.
 #' }
 #' @examples
 #' Q_stat(
@@ -219,9 +219,9 @@ Q_stat <- function(Q, K) {
 #'
 #' Generates bootstrap replicate Q matrices, computes Fst/FstMax for each bootstrap replicate, produces several plots of the bootstrap distributions of Fst/FstMax for each provided Q matrix, and runs two statistical tests comparing these bootstrap distributions. The tests comparing bootstrap distributions of Fst/FstMax facilitate statistical comparison of the variability in each of multiple Q matrices.
 #'
-#' @param matrices A dataframe, matrix, or array representing a Q matrix, or a (possibly named) list of arbitrarily many such objects. For each Q matrix, matrix rows represents an individual and the last \code{K} columns contain individual membership coefficients (when restricted to the last \code{K} columns, the rows should sum to approximately 1). If the list of matrices is not named, the matrices are numbered and the numbers are used in place of names.
+#' @param matrices A dataframe, matrix, or array representing a Q matrix, or a (possibly named) list of arbitrarily many such objects. For each Q matrix, matrix rows represent an individual and the last \code{K} columns contain individual membership coefficients (when restricted to the last \code{K} columns, the rows must sum to approximately 1). If the matrices are not named (e.g., \code{matrices = list(matrix1, matrix2)} instead of \code{matrices = list(A = matrix1, B = matrix2)}), the matrices will be numbered in the order they are provided in the list.
 #' @param n_replicates The number of bootstrap replicate matrices to generate for each provided Q matrix.
-#' @param K The number of ancestral clusters in the Q matrix. Each individual should have \code{K} membership coefficients.
+#' @param K The number of ancestral clusters in the Q matrix. Each individual must have \code{K} membership coefficients.
 #' @param seed Optional; sets the random seed. Use if reproducibility of random results is desired.
 #'
 #' @return A named list containing the following entries:
@@ -232,7 +232,7 @@ Q_stat <- function(Q, K) {
 #' \item \code{plot_violin}: A ggplot2 violin plot depicting the bootstrap distribution of Fst/FstMax for each matrix in \code{matrices}.
 #' \item \code{plot_ecdf}: A ggplot2 empirical cumulative distribution function plot depicting the bootstrap distribution of Fst/FstMax for each matrix in \code{matrices}.
 #' \item \code{test_kruskal_wallis}: Results of a Kruskal-Wallis test performed on the bootstrap distributions of Fst/FstMax. This test is a non-parametric statistical test of whether all provided bootstrap distributions are identically distributed.
-#' \item \code{test_pairwise_wilcox}: Results of a Wilcoxon rank-sum test performed on the bootstrap distributions of Fst/FstMax. This test is a non-parameteric statistical test of whether \emph{each pairwise combination} of provided bootstrap distributions is identically distributed.
+#' \item \code{test_pairwise_wilcox}: Results of a Wilcoxon rank-sum test performed on the bootstrap distributions of Fst/FstMax. This test is a non-parameteric statistical test of whether \emph{each pairwise combination} of provided bootstrap distributions is identically distributed. The result is a matrix of p-values whose entries correspond to each pair of Q matrices.
 #' }
 #' @examples
 #' # Use Q_simulate to generate 4 random Q matrices
@@ -282,8 +282,7 @@ Q_stat <- function(Q, K) {
 #' )
 #'
 #' # Access the elements of this list using $.
-#' # For example....
-#'
+#' For example:
 #' # To look at all 400 bootstrap Q matrix
 #' # replicates:
 #' bs$bootstrap_replicates
@@ -507,7 +506,7 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed) {
 #' Simulates Q matrices by drawing vectors of membership coefficients from a Dirichlet distribution parameterized by two variables: \eqn{\alpha}, which controls variability, and \eqn{\lambda=(\lambda_1, \lambda_2, ...., \lambda_K)} which controls the mean of each of the K ancestry coefficients.
 #'
 #' @param alpha A number that sets the variability of the membership coefficients. The variance of coefficient k is Var[x_k] = \eqn{\lambda_k/(\alpha+1)}. Larger values of \eqn{\alpha} lead to lower variability.
-#' @param lambda A vector that sets the mean membership of each ancestral cluster across the population. The vector should sum to 1.
+#' @param lambda A vector that sets the mean membership of each ancestral cluster across the population. The vector must sum to 1.
 #' @param rep The number of Q matrices to generate.
 #' @param popsize The number of individuals to include in each Q matrix.
 #' @param seed Optional; sets the random seed. Use if reproducibility of random results is desired.
@@ -517,7 +516,7 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed) {
 #' \item \code{rep}: Which random Q matrix the row belongs to (a number between 1 and the parameter \code{rep})
 #' \item \code{ind}: Which individual in each Q matrix the row corresponds to (a number between 1 and the parameter \code{popsize})
 #' \item \code{alpha}: The alpha value used to simulate the Q matrix.
-#' \item \code{Pop}: alpha_rep (where alpha and rep are the columns described above). Serves as a unique identifier for each Q matrix (useful if running simulations with many different values of \eqn{\alpha}).
+#' \item \code{Pop}: alpha_rep (where rep and alpha are the first and third columns as described in this list). Serves as a unique identifier for each Q matrix (useful if running simulations with many different values of \eqn{\alpha}).
 #' \item \code{spacer}: a repeated ":" to make simulated Q matrices match output of population structure inference software.
 #' \item \code{q1, q2, etc.}: Membership coefficients (sum to 1).
 #' }

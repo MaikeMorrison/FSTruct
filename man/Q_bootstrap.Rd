@@ -7,11 +7,11 @@
 Q_bootstrap(matrices, n_replicates, K, seed)
 }
 \arguments{
-\item{matrices}{A dataframe, matrix, or array representing a Q matrix, or a (possibly named) list of arbitrarily many such objects. For each Q matrix, matrix rows represents an individual and the last \code{K} columns contain individual membership coefficients (when restricted to the last \code{K} columns, the rows should sum to approximately 1). If the list of matrices is not named, the matrices are numbered and the numbers are used in place of names.}
+\item{matrices}{A dataframe, matrix, or array representing a Q matrix, or a (possibly named) list of arbitrarily many such objects. For each Q matrix, matrix rows represent an individual and the last \code{K} columns contain individual membership coefficients (when restricted to the last \code{K} columns, the rows must sum to approximately 1). If the matrices are not named (e.g., \code{matrices = list(matrix1, matrix2)} instead of \code{matrices = list(A = matrix1, B = matrix2)}), the matrices will be numbered in the order they are provided in the list.}
 
 \item{n_replicates}{The number of bootstrap replicate matrices to generate for each provided Q matrix.}
 
-\item{K}{The number of ancestral clusters in the Q matrix. Each individual should have \code{K} membership coefficients.}
+\item{K}{The number of ancestral clusters in the Q matrix. Each individual must have \code{K} membership coefficients.}
 
 \item{seed}{Optional; sets the random seed. Use if reproducibility of random results is desired.}
 }
@@ -24,7 +24,7 @@ A named list containing the following entries:
 \item \code{plot_violin}: A ggplot2 violin plot depicting the bootstrap distribution of Fst/FstMax for each matrix in \code{matrices}.
 \item \code{plot_ecdf}: A ggplot2 empirical cumulative distribution function plot depicting the bootstrap distribution of Fst/FstMax for each matrix in \code{matrices}.
 \item \code{test_kruskal_wallis}: Results of a Kruskal-Wallis test performed on the bootstrap distributions of Fst/FstMax. This test is a non-parametric statistical test of whether all provided bootstrap distributions are identically distributed.
-\item \code{test_pairwise_wilcox}: Results of a Wilcoxon rank-sum test performed on the bootstrap distributions of Fst/FstMax. This test is a non-parameteric statistical test of whether \emph{each pairwise combination} of provided bootstrap distributions is identically distributed.
+\item \code{test_pairwise_wilcox}: Results of a Wilcoxon rank-sum test performed on the bootstrap distributions of Fst/FstMax. This test is a non-parameteric statistical test of whether \emph{each pairwise combination} of provided bootstrap distributions is identically distributed. The result is a matrix of p-values whose entries correspond to each pair of Q matrices.
 }
 }
 \description{
@@ -78,8 +78,7 @@ bs <- Q_bootstrap(
 )
 
 # Access the elements of this list using $.
-# For example....
-
+For example:
 # To look at all 400 bootstrap Q matrix
 # replicates:
 bs$bootstrap_replicates

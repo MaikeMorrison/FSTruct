@@ -9,7 +9,7 @@ Q_simulate(alpha, lambda, rep, popsize, seed)
 \arguments{
 \item{alpha}{A number that sets the variability of the membership coefficients. The variance of coefficient k is Var[x_k] = \eqn{\lambda_k/(\alpha+1)}. Larger values of \eqn{\alpha} lead to lower variability.}
 
-\item{lambda}{A vector that sets the mean membership of each ancestral cluster across the population. The vector should sum to 1.}
+\item{lambda}{A vector that sets the mean membership of each ancestral cluster across the population. The vector must sum to 1.}
 
 \item{rep}{The number of Q matrices to generate.}
 
@@ -23,13 +23,13 @@ A data frame containing the simulated Q matrices. Each row represents a single s
 \item \code{rep}: Which random Q matrix the row belongs to (a number between 1 and the parameter \code{rep})
 \item \code{ind}: Which individual in each Q matrix the row corresponds to (a number between 1 and the parameter \code{popsize})
 \item \code{alpha}: The alpha value used to simulate the Q matrix.
-\item \code{Pop}: alpha_rep (where alpha and rep are the columns described above). Serves as a unique identifier for each Q matrix (useful if running simulations with many different values of \eqn{\alpha}).
+\item \code{Pop}: alpha_rep (where rep and alpha are the first and third columns as described in this list). Serves as a unique identifier for each Q matrix (useful if running simulations with many different values of \eqn{\alpha}).
 \item \code{spacer}: a repeated ":" to make simulated Q matrices match output of population structure inference software.
 \item \code{q1, q2, etc.}: Membership coefficients (sum to 1).
 }
 }
 \description{
-Simulates Q matrices by drawing vectors of membership coefficients from a Dirichlet distrubtion parameterized by two variables: \eqn{\alpha}, which controls variability, and \eqn{\lambda=(\lambda_1, \lambda_2, ...., \lambda_K)} which controls the mean of each of the K ancestry coefficients.
+Simulates Q matrices by drawing vectors of membership coefficients from a Dirichlet distribution parameterized by two variables: \eqn{\alpha}, which controls variability, and \eqn{\lambda=(\lambda_1, \lambda_2, ...., \lambda_K)} which controls the mean of each of the K ancestry coefficients.
 }
 \examples{
 # Simulate 100 random Q matrices.

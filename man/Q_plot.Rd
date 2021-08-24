@@ -8,14 +8,14 @@ Q_plot(Q, K, arrange)
 }
 \arguments{
 \item{Q}{A dataframe, matrix, or array representing a Q matrix. Each row
-represents an individual and the last \code{K} columns contain individual
+represents an individual, and the last \code{K} columns contain individual
 membership coefficients. The first few columns may contain information not
 relevant to this plot; their inclusion is optional. When restricted to the
-last \code{K} columns, the rows of this matrix should sum to approximately
+last \code{K} columns, the rows of this matrix must sum to approximately
 1.}
 
 \item{K}{The number of ancestral clusters in the Q matrix. Each individual
-should have \code{K} membership coefficients.}
+must have \code{K} membership coefficients.}
 
 \item{arrange}{Optional variable controlling horizontal ordering of individuals.
 If \code{arrange = TRUE}, individuals are ordered by the clusters of greatest
