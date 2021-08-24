@@ -282,7 +282,7 @@ Q_stat <- function(Q, K) {
 #' )
 #'
 #' # Access the elements of this list using $.
-#' For example:
+#' # For example:
 #' # To look at all 400 bootstrap Q matrix
 #' # replicates:
 #' bs$bootstrap_replicates
