@@ -80,14 +80,23 @@ The last $K=3$ columns contain the membership coefficients.
 
 ## Install and load FSTruct
 
-The development version of the FSTruct package can be downloaded from GitHub using the code below. Be sure to first install the package devtools if it is not yet installed.
+The FSTruct package can be downloaded from GitHub using the code below. Be sure to first install the package `devtools` if it is not yet installed.
 
 ```{r}
 # install.packages("devtools") # Run if devtools is not yet installed
 # devtools::install_github("MaikeMorrison/FSTruct") # Run if FSTruct is not yet installed
 ```
 
-Load the packages used in this vignette. dplyr is a package which contains functions such as the pipe `%>%` and the function `arrange`, which reorders the rows of a dataframe.
+To follow along with this vignette, make sure the following packages are also installed:
+
+```{r}
+# install.packages("dplyr") # Run if dplyr is not yet installed
+# install.packages("ggplot2") # Run if ggplot2 is not yet installed
+# install.packages("cowplot") # Run if cowplot is not yet installed
+# install.packages("data.table") # Run if data.table is not yet installed
+```
+
+Then load the package `FSTruct` and the package `dplyr`, which contains functions such as the pipe `%>%` and the function `arrange`, which reorders the rows of a data frame.
 
 ```{r setup}
 library(FSTruct)
@@ -125,7 +134,7 @@ The function `Q_simulate` has four parameters:
 
 For this example, I chose to simulate four $Q$ matrices (`A`, `B`, `C`, and `D`), each with 20 individuals and with the same vector of mean membership coefficients, $\lambda = (.75, .25)$. This means that each $Q$ matrix will have 20 rows and, on average, individuals from any of the four matrices will possess three-quarters of their ancestry from the first ancestral cluster, and one-quarter of their ancestry from the second ancestral cluster. 
 
-I chose to simulate matrices `A` and `B` using $\alpha = 0.1$, which results in fairly high variability across membership coefficients, and matrices `C` and `D` using $\alpha = 10$, which results in lower variability. Properties of the Dirichlet distribution tell us that the variance of the $k^{th}$ ancestral cluster, $q_k$, is $Var[q_k] = \lambda_k(1-\lambda_k)/(\alpha+1)$. It follows that, for matrices `A` and `B`, $Var[q_1] = Var[q_2]=.75\times.25/(.1+1) \approx 0.17$. For matrices `C` and `D`, $Var[q_1] = Var[q_2] = .75\times.25/(10+1) \approx 0.017$. 
+I chose to simulate matrices `A` and `B` using $\alpha = 0.1$, which results in fairly high variability across membership coefficients, and matrices `C` and `D` using $\alpha = 5$, which results in lower variability. Properties of the Dirichlet distribution tell us that the variance of the $k^{th}$ ancestral cluster, $q_k$, is $Var[q_k] = \lambda_k(1-\lambda_k)/(\alpha+1)$. It follows that, for matrices `A` and `B`, $Var[q_1] = Var[q_2]=.75\times.25/(.1+1) \approx 0.17$. For matrices `C` and `D`, $Var[q_1] = Var[q_2] = .75\times.25/(5+1) \approx 0.03$. 
 
 
 ```{r}
@@ -133,9 +142,9 @@ A = Q_simulate(alpha = .1, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 1
 
 B = Q_simulate(alpha = .1, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 2)
 
-C = Q_simulate(alpha = 10, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 3)
+C = Q_simulate(alpha = 5, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 3)
 
-D = Q_simulate(alpha = 10, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 4)
+D = Q_simulate(alpha = 5, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 4)
 ```
 
 Here is what matrix `A` looks like:
@@ -147,7 +156,7 @@ The format of this $Q$ matrix is very similar to the format of the ADMIXTURE $Q$
 
 ## Visualize $Q$ Matrices
 
-We visualize these matrices using the function `Q_plot`, which has two required parameters: a $Q$ matrix (`Q`) and the number of ancestral clusters (`K`). The third parameter, `arrange`, is optional. If `arrange = TRUE`, the individuals' are horizontally ordered by the cluster with the greatest mean membership. Below, we accomplish this ordering manually for plot A, and use `arrange = TRUE` for all subsequent plots. These two methods accomplish the same ordering.
+We visualize these matrices using the function `Q_plot`, which has two required parameters: a $Q$ matrix (`Q`) and the number of ancestral clusters (`K`). The third parameter, `arrange`, is optional. If `arrange = TRUE`, the individuals' are horizontally ordered by the clusters with the greatest mean membership. Below, we accomplish this ordering manually for plot A, and use `arrange = TRUE` for all subsequent plots. These two methods accomplish the same ordering.
 
 ```{r}
 # Generate and modify a plot for each Q matrix
@@ -204,9 +213,9 @@ Q_stat(Q = C, K = 2)
 Q_stat(Q = D, K = 2)
 ```
 
-For each matrix, the function `Q_stat` returns $F_{ST}$, $F_{ST}^{max}$, and their ratio $(F_{ST}/F_{ST}^{max})$. In population genetics, the statistic $F_{ST}$ is conventionally used to quantify variability in allele frequencies among a collection of subpopulations. Here, we use this statistic to quantify the variability in membership coefficients among a collection of individuals. (See the methods section of *the paper* for a more thorough discussion of this analogy.) Importantly, when the $Q$ matrix contains few individuals, or the mean membership of the most prevalent ancestral cluster is close to $1/K$ (the minimum value) or 1 (the maximum value), the maximum possible value of $F_{ST}$ $(F_{ST}^{max})$ can be much less than 1. For this reason, we use the normalized statistic, $F_{ST}/F_{ST}^{max}$, which always ranges between 0 and 1, and can thus be used to compare the variability of multiple $Q$ matrices. 
+For each matrix, the function `Q_stat` returns $F_{ST}$, $F_{ST}^{max}$, and their ratio $(F_{ST}/F_{ST}^{max})$. In population genetics, the statistic $F_{ST}$ is conventionally used to quantify variability in allele frequencies among a collection of subpopulations. Here, we use this statistic to quantify the variability in membership coefficients among a collection of individuals. (See the methods section of the forthcoming paper for a more thorough discussion of this analogy.) Importantly, when the $Q$ matrix contains few individuals, or the mean membership of the most prevalent ancestral cluster is close to $1/K$ (the minimum value) or 1 (the maximum value), the maximum possible value of $F_{ST}$ $(F_{ST}^{max})$ can be much less than 1. For this reason, we use the normalized statistic, $F_{ST}/F_{ST}^{max}$, which always ranges between 0 and 1, and can thus be used to compare the variability of multiple $Q$ matrices. 
 
-We observe from the results of `Q_stat` that matrices `A` and `B` have values of $F_{ST}/F_{ST}^{max}$ greater than 0.8, whereas matrices `C` and `D` have values close to 0.5. Is the similarity between `C` and `D` the result of random chance? Are the differences in variability between matrices `A` and `B` statistically significant?
+We observe from the results of `Q_stat` that matrices `A` and `B` have values of $F_{ST}/F_{ST}^{max}$ greater than 0.8, whereas matrices `C` and `D` have values close to 0.12. Is the similarity between `C` and `D` the result of random chance? Are the differences in variability between matrices `A` and `B` statistically significant?
 
 To answer these questions, we employ  [bootstrapping](https://en.wikipedia.org/wiki/Bootstrapping_(statistics)). 
 
@@ -236,7 +245,7 @@ The output of `Q_bootstrap`, which I named `bootstrap`, is a list of the followi
 
 * `bootstrap_replicates`: A list of bootstrap replicate matrices for each $Q$ matrix provided
 
-* `statistics`: A dataframe containing the value of $F_{ST}/F_{ST}^{max}$ for each bootstrap replicate matrix
+* `statistics`: A dataframe containing the values of $F_{ST}$, $F_{ST}^{max}$, and $F_{ST}/F_{ST}^{max}$ for each bootstrap replicate matrix
 
 * `plot_boxplot`, `plot_violin`, `plot_ecdf`: A box plot, violin plot, or empirical cumulative distribution function (ECDF) plot of the bootstrap distribution of $F_{ST}/F_{ST}^{max}$ for each $Q$ matrix
 
@@ -245,7 +254,7 @@ The output of `Q_bootstrap`, which I named `bootstrap`, is a list of the followi
 * `test_pairwise_wilcox`: The results of a Wilcoxon rank-sum test, which tests the identity of pairwise bootstrap means for each pair of matrices
 
 
-Included in the output are three options for visualizing the bootstrap distributions: a box plot, a violin plot, and an empirical cumulative distribution plot. All are ggplot objects and can be modified in many ways using tools from the package `ggplot2`. 
+All three options for visualizing the bootstrap distributions are ggplot objects and can be modified in many ways using tools from the package `ggplot2`:
 
 ```{r, fig.height=4}
 cowplot::plot_grid(bootstrap$plot_boxplot + ggplot2::ggtitle("Box Plot"), 
@@ -273,7 +282,7 @@ bootstrap$test_pairwise_wilcox
 
 **The results of these tests support the claim that significant differences exist in the variability of all pairs of matrices except the pair containing matrices `C` and `D`.**
 
-You cannot make comparisons if only one $Q$ matrix is provided. If only one matrix was provided to `Q_bootstrap`, the entries `test_kruskal_wallis` and `test_pairwise_wilcox` will contain the text *"This statistical test can only be performed if a list of matrices is provided."* instead of the results of a statistical test.
+You cannot make comparisons if only one $Q$ matrix is provided. If only one matrix is provided to `Q_bootstrap`, the entries `test_kruskal_wallis` and `test_pairwise_wilcox` will contain the text *"This statistical test can only be performed if a list of matrices is provided."* instead of the results of a statistical test.
 
 
 ## Final Thoughts
