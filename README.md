@@ -7,7 +7,7 @@
 
 <!-- badges: end -->
 
-The FSTruct package provides an Fst-based tool to compare the
+The FSTruct R package provides an Fst-based tool to compare the
 variability of Q matrices (matrices with rows of ancestry coefficients,
 the default output of population structure inference programs such a
 STRUCTURE and ADMIXTURE).
@@ -37,12 +37,21 @@ Alcala, and Noah Rosenberg.
 
 <!-- ``` -->
 
-You can install this package from GitHub with:
+You can install this package from GitHub with the following R code:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("MaikeMorrison/FSTruct")
+devtools::install_github("MaikeMorrison/FSTruct", dependenceies = TRUE)
 ```
+
+**If you have not used R before:** [Install
+R](https://www.r-project.org/) (not optional) and
+[RStudio](https://www.rstudio.com/products/rstudio/) (optional). In the
+R or RStudio console, paste `install.packages("devtools")` and hit enter
+to run. Next run `devtools::install_github("MaikeMorrison/FSTruct",
+dependenceies = TRUE)` to install FSTruct. Then see the [introductory
+vignette](https://maikemorrison.com/files/fstruct-intro) for details on
+how to use this package.
 
 ## Usage
 
