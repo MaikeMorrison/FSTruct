@@ -41,7 +41,7 @@ You can install this package from GitHub with the following R code:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("MaikeMorrison/FSTruct", dependenceies = TRUE)
+devtools::install_github("MaikeMorrison/FSTruct")
 ```
 
 **If you have not used R before:** [Install R](https://www.r-project.org/) (not optional) and [RStudio](https://www.rstudio.com/products/rstudio/) (optional). In the R or RStudio console, paste `install.packages("devtools")` and hit enter to run. Next run `devtools::install_github("MaikeMorrison/FSTruct", dependenceies = TRUE)` to install FSTruct. Then see the [introductory vignette](https://maikemorrison.com/files/fstruct-intro) for details on how to use this package.

@@ -41,7 +41,7 @@ You can install this package from GitHub with the following R code:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("MaikeMorrison/FSTruct", dependenceies = TRUE)
+devtools::install_github("MaikeMorrison/FSTruct")
 ```
 
 **If you have not used R before:** [Install
