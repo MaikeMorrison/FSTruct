@@ -11,7 +11,7 @@ Q_bootstrap(matrices, n_replicates, K, seed)
 
 \item{n_replicates}{The number of bootstrap replicate matrices to generate for each provided Q matrix.}
 
-\item{K}{The number of ancestral clusters in the Q matrix. Each individual must have \code{K} membership coefficients.}
+\item{K}{The number of ancestral clusters in each provided Q matrix, or a vector of such K values if the value of Q differs between matrices. If a single K is provided, each individual in every matrix must have \code{K} membership coefficients. If a vector of multiple K values is provided, each must correspond to a Q matrix in \code{matrices} and be provided in the same order as the matrices.}
 
 \item{seed}{Optional; sets the random seed. Use if reproducibility of random results is desired.}
 }

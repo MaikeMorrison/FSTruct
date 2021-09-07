@@ -358,7 +358,7 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed) {
 
     ## For each matrix: ##
     for (m in 1:n_matrix) {
-      if(length(K>1)){
+      if(length(K)>1){
         K <- K.list[[m]]
       }
 
