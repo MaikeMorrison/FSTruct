@@ -346,7 +346,7 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed) {
   } else if (is.list(matrices)) {
     n_matrix <- length(matrices)
 
-    if(length(K>1)){
+    if(length(K)>1){
       K.list <- K
     }
     # List of names of matrices
