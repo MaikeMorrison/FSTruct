@@ -31,6 +31,16 @@ Q_example <- matrix(
 ## ----echo = FALSE-------------------------------------------------------------
 knitr::kable(Q_example, col.names = NULL)
 
+## -----------------------------------------------------------------------------
+# install.packages("devtools") # Run if devtools is not yet installed
+# devtools::install_github("MaikeMorrison/FSTruct") # Run if FSTruct is not yet installed
+
+## -----------------------------------------------------------------------------
+# install.packages("dplyr") # Run if dplyr is not yet installed
+# install.packages("ggplot2") # Run if ggplot2 is not yet installed
+# install.packages("cowplot") # Run if cowplot is not yet installed
+# install.packages("data.table") # Run if data.table is not yet installed
+
 ## ----setup--------------------------------------------------------------------
 library(FSTruct)
 library(dplyr)
@@ -38,14 +48,17 @@ library(dplyr)
 ## ---- eval = FALSE------------------------------------------------------------
 #  Q_matrix_name <- data.table::fread("file path to your Q matrix.output")
 
+## ---- eval = FALSE------------------------------------------------------------
+#  colnames(Q_matrix_name) <- c("rep", "ind", "alpha", "Pop", "spacer", "q1", "q2")
+
 ## -----------------------------------------------------------------------------
 A = Q_simulate(alpha = .1, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 1)
 
 B = Q_simulate(alpha = .1, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 2)
 
-C = Q_simulate(alpha = 1, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 3)
+C = Q_simulate(alpha = 5, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 3)
 
-D = Q_simulate(alpha = 1, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 4)
+D = Q_simulate(alpha = 5, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 4)
 
 ## ---- echo = FALSE------------------------------------------------------------
 knitr::kable(A)
@@ -53,27 +66,27 @@ knitr::kable(A)
 ## -----------------------------------------------------------------------------
 # Generate and modify a plot for each Q matrix
 
-# arrange(var) sorts the individuals in order of that variable
-# scale_fill_brewer() modifies the color scheme
-# Because Q_plot() outputs a ggplot, you can do lots of modifications!
-
-plot_A <- Q_plot(Q = A %>% arrange(lambda1),
+plot_A <- Q_plot(Q = A %>% arrange(q1),
                  K=2) + 
   ggplot2::scale_fill_brewer("Blues")
 
-plot_B <- Q_plot(Q = B %>% arrange(lambda1), 
-                 K=2) + 
+plot_B <- Q_plot(Q = B, 
+                 K=2,
+                 arrange = TRUE) + 
   ggplot2::scale_fill_brewer("Blues")
 
-plot_C <- Q_plot(Q = C %>% arrange(lambda1), 
-                 K=2) + 
+plot_C <- Q_plot(Q = C, 
+                 K=2,
+                 arrange = TRUE) + 
   ggplot2::scale_fill_brewer("Blues")
 
-plot_D <- Q_plot(Q = D %>% arrange(lambda1), 
-                 K=2) + 
+plot_D <- Q_plot(Q = D, 
+                 K=2,
+                 arrange = TRUE) + 
   ggplot2::scale_fill_brewer("Blues")
 
-# Display them in a grid
+## -----------------------------------------------------------------------------
+# Display these plots in a grid
 cowplot::plot_grid(plot_A, plot_B, plot_C, plot_D,
                    labels = "AUTO", 
                    nrow = 1,
@@ -86,22 +99,19 @@ Q_stat(Q = C, K = 2)
 Q_stat(Q = D, K = 2)
 
 ## -----------------------------------------------------------------------------
-bs <- Q_bootstrap(matrices = list(A = A, # name = matrix
-                                  B = B,
-                                  C = C,
-                                  D = D), 
+bootstrap <- Q_bootstrap(matrices = list(A = A, B = B, C = C, D = D), 
                   n_replicates = 100,
                   K = 2, 
                   seed = 1)
 
 ## ---- fig.height=4------------------------------------------------------------
-cowplot::plot_grid(bs$plot_boxplot + ggplot2::ggtitle("Box Plot"), 
-                   bs$plot_violin + ggplot2::ggtitle("Violin Plot"), 
-                   bs$plot_ecdf + ggplot2::ggtitle("ECDF Plot"), 
+cowplot::plot_grid(bootstrap$plot_boxplot + ggplot2::ggtitle("Box Plot"), 
+                   bootstrap$plot_violin + ggplot2::ggtitle("Violin Plot"), 
+                   bootstrap$plot_ecdf + ggplot2::ggtitle("ECDF Plot"), 
                    nrow = 2, rel_widths = c(1,1,2))
 
 ## -----------------------------------------------------------------------------
-bs$test_kruskal_wallis
+bootstrap$test_kruskal_wallis
 
-bs$test_pairwise_wilcox
+bootstrap$test_pairwise_wilcox
 

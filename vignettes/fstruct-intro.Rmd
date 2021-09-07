@@ -229,7 +229,7 @@ To generate a bootstrap distribution for the four simulated $Q$ matrices, I used
 
 * `n_replicates`, the number of bootstrap replicates to generate for each $Q$ matrix
 
-* `K`, the number of ancestral clusters
+* `K`, the number of ancestral clusters. Can also be a vector if the number of ancestral clusters differs among the provided $Q$ matrices.
 
 * `seed`, an optional number which, if included, is used as the random seed to make the random results reproducible
 
