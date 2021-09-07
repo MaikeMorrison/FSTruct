@@ -345,10 +345,8 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed) {
     # Do computations if matrices = a list ---------------------------------------------
   } else if (is.list(matrices)) {
     n_matrix <- length(matrices)
+    K.list <- K
 
-    if(length(K)>1){
-      K.list <- K
-    }
     # List of names of matrices
     names <- if (sum(!is.na(names(matrices)))) {
       names(matrices)
@@ -358,7 +356,7 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed) {
 
     ## For each matrix: ##
     for (m in 1:n_matrix) {
-      if(length(K)>1){
+      if(length(K.list)>1){
         K <- K.list[[m]]
       }
 
