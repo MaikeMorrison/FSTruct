@@ -221,7 +221,7 @@ Q_stat <- function(Q, K) {
 #'
 #' @param matrices A dataframe, matrix, or array representing a Q matrix, or a (possibly named) list of arbitrarily many such objects. For each Q matrix, matrix rows represent an individual and the last \code{K} columns contain individual membership coefficients (when restricted to the last \code{K} columns, the rows must sum to approximately 1). If the matrices are not named (e.g., \code{matrices = list(matrix1, matrix2)} instead of \code{matrices = list(A = matrix1, B = matrix2)}), the matrices will be numbered in the order they are provided in the list.
 #' @param n_replicates The number of bootstrap replicate matrices to generate for each provided Q matrix.
-#' @param K The number of ancestral clusters in the Q matrix. Each individual must have \code{K} membership coefficients.
+#' @param K The number of ancestral clusters in each provided Q matrix, or a vector of such K values if the value of Q differs between matrices. If a single K is provided, each individual in every matrix must have \code{K} membership coefficients. If a vector of multiple K values is provided, each must correspond to a Q matrix in \code{matrices} and be provided in the same order as the matrices.
 #' @param seed Optional; sets the random seed. Use if reproducibility of random results is desired.
 #'
 #' @return A named list containing the following entries:
@@ -346,6 +346,9 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed) {
   } else if (is.list(matrices)) {
     n_matrix <- length(matrices)
 
+    if(length(K>1)){
+      K.list <- K
+    }
     # List of names of matrices
     names <- if (sum(!is.na(names(matrices)))) {
       names(matrices)
@@ -355,6 +358,10 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed) {
 
     ## For each matrix: ##
     for (m in 1:n_matrix) {
+      if(length(K>1)){
+        K <- K.list[[m]]
+      }
+
       bs_list <- list()
       matrix <- matrices[[m]]
 
