@@ -25,7 +25,8 @@ The package includes four functions:
     distribution.
 
 This package accompanies a forthcoming paper by Maike Morrison, Nicolas
-Alcala, and Noah Rosenberg.
+Alcala, and Noah Rosenberg. [You can access the preprint at this
+link.](https://doi.org/10.1101/2021.09.24.461741)
 
 ## Installation
 
