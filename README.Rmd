@@ -50,6 +50,8 @@ devtools::install_github("MaikeMorrison/FSTruct")
 
 For a step-by-step guide to this package, read the [introductory vignette](https://maikemorrison.com/files/fstruct-intro). 
 
+For details on the functions and their usage, read the [FSTruct manual](https://maikemorrison.com/files/fstruct-manual.pdf).
+
 <!-- ## Example -->
 
 <!-- This is a basic example which shows you how to solve a common problem: -->
