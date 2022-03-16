@@ -94,9 +94,7 @@ Q_checker <- function(Q, K, rep) {
 #'   # Below are example, optional modifications to the default plot
 #'   ggplot2::ggtitle("Population A") +
 #'   ggplot2::scale_fill_brewer("Blues") +
-#'   ggplot2::scale_color_brewer("Blues") +
 #'   ggplot2::xlab("Individuals")
-#'   # Note that both scale_fill and scale_color are needed to change the color of the bars.
 #' @importFrom dplyr %>%
 #' @importFrom dplyr arrange
 #' @importFrom dplyr select
@@ -115,9 +113,8 @@ Q_plot <- function(Q, K, arrange) {
   if (!missing(arrange)) {
     if(arrange == TRUE){
     clustermeans <- colMeans(Q) %>% sort() %>% rev
-    ordernames <- names(clustermeans)
     Q <- data.frame(Q) %>%
-      dplyr::arrange(dplyr::across({{ ordernames }})) %>%
+      dplyr::arrange(get(names(clustermeans))) %>%
       dplyr::select(names(clustermeans))
     }
   }
@@ -130,7 +127,7 @@ Q_plot <- function(Q, K, arrange) {
   # Generate the structure plot
   ggplot2::ggplot(
     data = df,
-    ggplot2::aes(fill = .data$name, color = .data$name, y = .data$value, x = .data$Individuals)
+    ggplot2::aes(fill = .data$name, y = .data$value, x = .data$Individuals)
   ) +
     ggplot2::geom_bar(position = "stack", stat = "identity", width = 1) +
     ggplot2::theme_void() +

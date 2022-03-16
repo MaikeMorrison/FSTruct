@@ -59,7 +59,5 @@ Q_plot(
   # Below are example, optional modifications to the default plot
   ggplot2::ggtitle("Population A") +
   ggplot2::scale_fill_brewer("Blues") +
-  ggplot2::scale_color_brewer("Blues") +
   ggplot2::xlab("Individuals")
-  # Note that both scale_fill and scale_color are needed to change the color of the bars.
 }

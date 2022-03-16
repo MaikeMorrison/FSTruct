@@ -23,7 +23,7 @@ Imports:
     gtools,
     latex2exp,
     rlang
-RoxygenNote: 7.1.2
+RoxygenNote: 7.1.1
 Suggests: 
     rmarkdown,
     knitr,
