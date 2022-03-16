@@ -163,29 +163,33 @@ We visualize these matrices using the function `Q_plot`, which has two required 
 
 plot_A <- Q_plot(Q = A %>% arrange(q1),
                  K=2) + 
-  ggplot2::scale_fill_brewer("Blues")
+  ggplot2::scale_fill_brewer("Blues")+ 
+  ggplot2::scale_color_brewer("Blues")
 
 plot_B <- Q_plot(Q = B, 
                  K=2,
                  arrange = TRUE) + 
-  ggplot2::scale_fill_brewer("Blues")
+  ggplot2::scale_fill_brewer("Blues")+ 
+  ggplot2::scale_color_brewer("Blues")
 
 plot_C <- Q_plot(Q = C, 
                  K=2,
                  arrange = TRUE) + 
-  ggplot2::scale_fill_brewer("Blues")
+  ggplot2::scale_fill_brewer("Blues")+ 
+  ggplot2::scale_color_brewer("Blues")
 
 plot_D <- Q_plot(Q = D, 
                  K=2,
                  arrange = TRUE) + 
-  ggplot2::scale_fill_brewer("Blues")
+  ggplot2::scale_fill_brewer("Blues")+ 
+  ggplot2::scale_color_brewer("Blues")
 ```
 
 `%>%`, the pipe from dplyr, feeds the value on its left-hand side into the function on its right-hand side. 
 
 `arrange(matrix, var)`, a function from dplyr, sorts the rows in `matrix` according to a column named `var`. Here, I order individuals in each $Q$ matrix according to their value of `q1`, but other variables can also be used. Use `colnames(Q_matrix_name)` to see the column names and decide which to sort by. Matrices can also be sorted by multiple columns (e.g., `arrange(matrix, var1, var2)`).
 
-`scale_fill_brewer()`, a function from ggplot2, modifies the color scheme of the plot. Because `Q_plot()` outputs a ggplot object, you can do lots of modifications!
+`scale_fill_brewer()` and `scale_color_brewer()`, functions from ggplot2, modify the color scheme of the plot. Because `Q_plot()` outputs a ggplot object, you can do lots of modifications!
 
 ```{r}
 # Display these plots in a grid
