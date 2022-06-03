@@ -25,9 +25,9 @@ The package includes four functions:
 
 This package accompanies the paper “FSTruct: an FST-based tool for
 measuring ancestry variation in inference of population structure” by
-Maike Morrison, Nicolas Alcala, and Noah Rosenberg. You can access the
+Maike Morrison, Nicolas Alcala, and Noah Rosenberg. [You can access the
 paper in *Molecular Ecology Resources* at this
-link.\](<https://doi.org/10.1111/1755-0998.13647>)
+link.](https://doi.org/10.1111/1755-0998.13647)
 
 ## Installation
 
