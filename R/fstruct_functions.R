@@ -119,7 +119,7 @@ Q_checker <- function(Q, K, rep) {
 #' @importFrom dplyr select
 #' @importFrom rlang .data
 #' @export
-Q_plot <- function(Q, K, arrange) {
+Q_plot <- function(Q, K=ncol(Q), arrange) {
   # Clean the matrices for plotting:
   Q <- Q_checker(Q = Q, K = K)
 
@@ -195,7 +195,7 @@ Q_plot <- function(Q, K, arrange) {
 #'   K = 3
 #' ) # How many ancestry coefficients per individual?
 #' @export
-Q_stat <- function(Q, K) {
+Q_stat <- function(Q, K=ncol(Q)) {
   # Check if Q matrix is in STRUCTURE/ADMIXTURE output form, or if it only contains columns of ancestry coefficients
   # If it is in STRUCTURE/ADMIXTURE output form, extract the ancestry coefficients--the last K columns.
   # Check also if the rows sum to 1, and divide matrix by rowsums if not
@@ -322,7 +322,7 @@ Q_stat <- function(Q, K) {
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
-Q_bootstrap <- function(matrices, n_replicates, K, seed) {
+Q_bootstrap <- function(matrices, n_replicates, K=ncol(matrices[[1]]), seed) {
   . <- NULL # to please R command check
 
   # set seed

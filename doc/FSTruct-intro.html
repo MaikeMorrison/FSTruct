@@ -14,19 +14,16 @@
 
 <title>Introduction to FSTruct</title>
 
-<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
-// v0.0.1
-// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
-
-document.addEventListener('DOMContentLoaded', function() {
-  const codeList = document.getElementsByClassName("sourceCode");
-  for (var i = 0; i < codeList.length; i++) {
-    var linkList = codeList[i].getElementsByTagName('a');
-    for (var j = 0; j < linkList.length; j++) {
-      if (linkList[j].innerHTML === "") {
-        linkList[j].setAttribute('aria-hidden', 'true');
-      }
-    }
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
   }
 });
 </script>
@@ -41,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </style>
 
 
+
 <style type="text/css">
   code {
     white-space: pre;
@@ -50,19 +48,19 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 </style>
 <style type="text/css" data-origin="pandoc">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -82,7 +80,7 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -336,30 +334,62 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<p>The FSTruct package provides an <span class="math inline">\(F_{ST}\)</span>-based tool to quantify the variability of <span class="math inline">\(Q\)</span> matrices (matrices with row vectors of ancestry coefficients, the default output of population structure inference programs such as <a href="http://dalexander.github.io/admixture/index.html">ADMIXTURE</a> and <a href="https://web.stanford.edu/group/pritchardlab/structure.html">STRUCTURE</a>).</p>
+<p>The FSTruct package provides an <span class="math inline">\(F_{ST}\)</span>-based tool to quantify the
+variability of <span class="math inline">\(Q\)</span> matrices (matrices
+with row vectors of ancestry coefficients, the default output of
+population structure inference programs such as <a href="http://dalexander.github.io/admixture/index.html">ADMIXTURE</a>
+and <a href="https://web.stanford.edu/group/pritchardlab/structure.html">STRUCTURE</a>).</p>
 <p>The package includes four functions:</p>
 <ul>
-<li><code>Q_stat</code> calculates <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> (a normalized measure of variability of membership vectors across individuals) for a <span class="math inline">\(Q\)</span> matrix.</li>
-<li><code>Q_bootstrap</code> generates bootstrap replicates of one or more <span class="math inline">\(Q\)</span> matrices along with associated statistics, including <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span>, as well as plots and statistical tests to compare bootstrap distributions of <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> for different matrices.</li>
-<li><code>Q_plot</code> plots <span class="math inline">\(Q\)</span> matrices using <code>ggplot2</code>.</li>
-<li><code>Q_simulate</code> generates one or more <span class="math inline">\(Q\)</span> matrices by drawing vectors of membership coefficients (each representing an individual) from the Dirichlet distribution.</li>
+<li><code>Q_stat</code> calculates <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> (a normalized measure
+of variability of membership vectors across individuals) for a <span class="math inline">\(Q\)</span> matrix.</li>
+<li><code>Q_bootstrap</code> generates bootstrap replicates of one or
+more <span class="math inline">\(Q\)</span> matrices along with
+associated statistics, including <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span>, as well as plots and
+statistical tests to compare bootstrap distributions of <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> for different
+matrices.</li>
+<li><code>Q_plot</code> plots <span class="math inline">\(Q\)</span>
+matrices using <code>ggplot2</code>.</li>
+<li><code>Q_simulate</code> generates one or more <span class="math inline">\(Q\)</span> matrices by drawing vectors of
+membership coefficients (each representing an individual) from the
+Dirichlet distribution.</li>
 </ul>
-<p>This package accompanies a forthcoming paper by Maike Morrison, Nicolas Alcala, and Noah Rosenberg.</p>
+<p>This package accompanies the paper “FSTruct: an FST-based tool for
+measuring ancestry variation in inference of population structure” by
+Maike Morrison, Nicolas Alcala, and Noah Rosenberg. <a href="https://doi.org/10.1111/1755-0998.13647">You can access the paper
+in <em>Molecular Ecology Resources</em> at this link.</a></p>
 <div id="in-this-document-we-walk-through-an-example-analysis-including-how-to" class="section level3">
-<h3>In this document, we walk through an example analysis, including how to:</h3>
+<h3>In this document, we walk through an example analysis, including how
+to:</h3>
 <ul>
-<li><p><strong>Load or simulate <span class="math inline">\(Q\)</span> matrices</strong></p></li>
-<li><p><strong>Visualize <span class="math inline">\(Q\)</span> matrices</strong></p></li>
-<li><p><strong>Calculate the <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> variability statistic for each <span class="math inline">\(Q\)</span> matrix</strong></p></li>
-<li><p><strong>Generate &amp; analyze bootstrap distributions of <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> for each matrix</strong></p></li>
-<li><p><strong>Use statistical tests to compare the variability of multiple <span class="math inline">\(Q\)</span> matrices</strong></p></li>
+<li><p><strong>Load or simulate <span class="math inline">\(Q\)</span>
+matrices</strong></p></li>
+<li><p><strong>Visualize <span class="math inline">\(Q\)</span>
+matrices</strong></p></li>
+<li><p><strong>Calculate the <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> variability statistic
+for each <span class="math inline">\(Q\)</span> matrix</strong></p></li>
+<li><p><strong>Generate &amp; analyze bootstrap distributions of <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> for each
+matrix</strong></p></li>
+<li><p><strong>Use statistical tests to compare the variability of
+multiple <span class="math inline">\(Q\)</span>
+matrices</strong></p></li>
 </ul>
-<p>All of these tasks can be accomplished using the four functions in the package FSTruct.</p>
+<p>All of these tasks can be accomplished using the four functions in
+the package FSTruct.</p>
 </div>
 <div id="what-is-a-q-matrix" class="section level2">
 <h2>What is a <span class="math inline">\(Q\)</span> matrix?</h2>
-<p>A <span class="math inline">\(Q\)</span> matrix represents the ancestry of a population; each row represents an individual and the last <span class="math inline">\(K\)</span> columns contain proportions called membership coefficients (the other columns give details about the individual, such as its name and population identifier). Membership coefficients describe how much of an individual’s ancestry derives from a given ancestral cluster. An individual’s membership coefficients sum to 1.</p>
-<p>A <span class="math inline">\(Q\)</span> matrix generated by the program ADMIXTURE with <span class="math inline">\(K=3\)</span> ancestral clusters looks like this:</p>
+<p>A <span class="math inline">\(Q\)</span> matrix represents the
+ancestry of a population; each row represents an individual and the last
+<span class="math inline">\(K\)</span> columns contain proportions
+called membership coefficients (the other columns give details about the
+individual, such as its name and population identifier). Membership
+coefficients describe how much of an individual’s ancestry derives from
+a given ancestral cluster. An individual’s membership coefficients sum
+to 1.</p>
+<p>A <span class="math inline">\(Q\)</span> matrix generated by the
+program ADMIXTURE with <span class="math inline">\(K=3\)</span>
+ancestral clusters looks like this:</p>
 <table>
 <tbody>
 <tr class="odd">
@@ -464,48 +494,91 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </tr>
 </tbody>
 </table>
-<p>The last <span class="math inline">\(K=3\)</span> columns contain the membership coefficients.</p>
+<p>The last <span class="math inline">\(K=3\)</span> columns contain the
+membership coefficients.</p>
 </div>
 <div id="install-and-load-fstruct" class="section level2">
 <h2>Install and load FSTruct</h2>
-<p>The FSTruct package can be downloaded from GitHub using the code below. Be sure to first install the package <code>devtools</code> if it is not yet installed.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># install.packages(&quot;devtools&quot;) # Run if devtools is not yet installed</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="co"># devtools::install_github(&quot;MaikeMorrison/FSTruct&quot;) # Run if FSTruct is not yet installed</span></span></code></pre></div>
-<p>To follow along with this vignette, make sure the following packages are also installed:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># install.packages(&quot;dplyr&quot;) # Run if dplyr is not yet installed</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="co"># install.packages(&quot;ggplot2&quot;) # Run if ggplot2 is not yet installed</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="co"># install.packages(&quot;cowplot&quot;) # Run if cowplot is not yet installed</span></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="co"># install.packages(&quot;data.table&quot;) # Run if data.table is not yet installed</span></span></code></pre></div>
-<p>Then load the package <code>FSTruct</code> and the package <code>dplyr</code>, which contains functions such as the pipe <code>%&gt;%</code> and the function <code>arrange</code>, which reorders the rows of a data frame.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">library</span>(FSTruct)</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">library</span>(dplyr)</span></code></pre></div>
+<p>The FSTruct package can be downloaded from GitHub using the code
+below. Be sure to first install the package <code>devtools</code> if it
+is not yet installed.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;devtools&quot;) # Run if devtools is not yet installed</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># devtools::install_github(&quot;MaikeMorrison/FSTruct&quot;) # Run if FSTruct is not yet installed</span></span></code></pre></div>
+<p>To follow along with this vignette, make sure the following packages
+are also installed:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;dplyr&quot;) # Run if dplyr is not yet installed</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;ggplot2&quot;) # Run if ggplot2 is not yet installed</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;cowplot&quot;) # Run if cowplot is not yet installed</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;data.table&quot;) # Run if data.table is not yet installed</span></span></code></pre></div>
+<p>Then load the package <code>FSTruct</code> and the package
+<code>dplyr</code>, which contains functions such as the pipe
+<code>%&gt;%</code> and the function <code>arrange</code>, which
+reorders the rows of a data frame.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FSTruct)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
 </div>
 <div id="load-or-simulate-q-matrices" class="section level2">
-<h2>Load or simulate <span class="math inline">\(Q\)</span> matrices</h2>
-<p>To begin the analysis, read one or more <span class="math inline">\(Q\)</span> matrices into R. For each <span class="math inline">\(Q\)</span> matrix, this task can be accomplished using:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>Q_matrix_name &lt;-<span class="st"> </span>data.table<span class="op">::</span><span class="kw">fread</span>(<span class="st">&quot;file path to your Q matrix.output&quot;</span>)</span></code></pre></div>
+<h2>Load or simulate <span class="math inline">\(Q\)</span>
+matrices</h2>
+<p>To begin the analysis, read one or more <span class="math inline">\(Q\)</span> matrices into R. For each <span class="math inline">\(Q\)</span> matrix, this task can be accomplished
+using:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Q_matrix_name <span class="ot">&lt;-</span> data.table<span class="sc">::</span><span class="fu">fread</span>(<span class="st">&quot;file path to your Q matrix.output&quot;</span>)</span></code></pre></div>
 <p>or other functions, such as <code>read.table()</code>.</p>
-<p>Note that the default column names of these <span class="math inline">\(Q\)</span> matrices will likely be <code>V1</code>, <code>V2</code>, <code>V3</code>, … If you wish to give the columns more informative names, use the function <code>colnames</code>, listing on the right-hand side your desired column names (the example below uses the same names as <code>Q_simulate</code> for <span class="math inline">\(K=2\)</span> ancestral clusters):</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">colnames</span>(Q_matrix_name) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;rep&quot;</span>, <span class="st">&quot;ind&quot;</span>, <span class="st">&quot;alpha&quot;</span>, <span class="st">&quot;Pop&quot;</span>, <span class="st">&quot;spacer&quot;</span>, <span class="st">&quot;q1&quot;</span>, <span class="st">&quot;q2&quot;</span>)</span></code></pre></div>
-<p>Repeat this process for each <span class="math inline">\(Q\)</span> matrix you wish to analyze.</p>
-<p>Alternatively, <span class="math inline">\(Q\)</span> matrices can be simulated using <code>Q_simulate</code>, which draws individuals from a Dirichlet probability distribution (for more details on the Dirichlet distribution, see the “Simulation examples” section of the forthcoming paper by Morrison, Alcala, and Rosenberg).</p>
+<p>Note that the default column names of these <span class="math inline">\(Q\)</span> matrices will likely be
+<code>V1</code>, <code>V2</code>, <code>V3</code>, … If you wish to give
+the columns more informative names, use the function
+<code>colnames</code>, listing on the right-hand side your desired
+column names (the example below uses the same names as
+<code>Q_simulate</code> for <span class="math inline">\(K=2\)</span>
+ancestral clusters):</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(Q_matrix_name) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;rep&quot;</span>, <span class="st">&quot;ind&quot;</span>, <span class="st">&quot;alpha&quot;</span>, <span class="st">&quot;Pop&quot;</span>, <span class="st">&quot;spacer&quot;</span>, <span class="st">&quot;q1&quot;</span>, <span class="st">&quot;q2&quot;</span>)</span></code></pre></div>
+<p>Repeat this process for each <span class="math inline">\(Q\)</span>
+matrix you wish to analyze.</p>
+<p>Alternatively, <span class="math inline">\(Q\)</span> matrices can be
+simulated using <code>Q_simulate</code>, which draws individuals from a
+Dirichlet probability distribution (for more details on the Dirichlet
+distribution, see the “Simulation examples” section of <a href="https://doi.org/10.1101/2021.09.24.461741">the forthcoming paper
+by Morrison, Alcala, and Rosenberg</a>).</p>
 <p>The function <code>Q_simulate</code> has four parameters:</p>
 <ul>
-<li><p><code>alpha</code>, a number that controls the variability. Higher values of <span class="math inline">\(\alpha\)</span> result in lower variances across membership coefficients.</p></li>
-<li><p><code>lambda</code>, a vector that controls the mean membership of each ancestral cluster.</p></li>
+<li><p><code>alpha</code>, a number that controls the variability.
+Higher values of <span class="math inline">\(\alpha\)</span> result in
+lower variances across membership coefficients.</p></li>
+<li><p><code>lambda</code>, a vector that controls the mean membership
+of each ancestral cluster.</p></li>
 <li><p><code>rep</code>, the number of matrices to simulate.</p></li>
-<li><p><code>popsize</code>, the number of individuals to put in the <span class="math inline">\(Q\)</span> matrix.</p></li>
-<li><p><code>seed</code>, an optional random seed to make results reproducible.</p></li>
+<li><p><code>popsize</code>, the number of individuals to put in the
+<span class="math inline">\(Q\)</span> matrix.</p></li>
+<li><p><code>seed</code>, an optional random seed to make results
+reproducible.</p></li>
 </ul>
-<p>For this example, I chose to simulate four <span class="math inline">\(Q\)</span> matrices (<code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code>), each with 20 individuals and with the same vector of mean membership coefficients, <span class="math inline">\(\lambda = (.75, .25)\)</span>. This means that each <span class="math inline">\(Q\)</span> matrix will have 20 rows and, on average, individuals from any of the four matrices will possess three-quarters of their ancestry from the first ancestral cluster, and one-quarter of their ancestry from the second ancestral cluster.</p>
-<p>I chose to simulate matrices <code>A</code> and <code>B</code> using <span class="math inline">\(\alpha = 0.1\)</span>, which results in fairly high variability across membership coefficients, and matrices <code>C</code> and <code>D</code> using <span class="math inline">\(\alpha = 5\)</span>, which results in lower variability. Properties of the Dirichlet distribution tell us that the variance of the <span class="math inline">\(k^{th}\)</span> ancestral cluster, <span class="math inline">\(q_k\)</span>, is <span class="math inline">\(Var[q_k] = \lambda_k(1-\lambda_k)/(\alpha+1)\)</span>. It follows that, for matrices <code>A</code> and <code>B</code>, <span class="math inline">\(Var[q_1] = Var[q_2]=.75\times.25/(.1+1) \approx 0.17\)</span>. For matrices <code>C</code> and <code>D</code>, <span class="math inline">\(Var[q_1] = Var[q_2] = .75\times.25/(5+1) \approx 0.03\)</span>.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>A =<span class="st"> </span><span class="kw">Q_simulate</span>(<span class="dt">alpha =</span> <span class="fl">.1</span>, <span class="dt">lambda =</span> <span class="kw">c</span>(.<span class="dv">75</span>, <span class="fl">.25</span>), <span class="dt">rep =</span> <span class="dv">1</span>, <span class="dt">popsize =</span> <span class="dv">20</span>, <span class="dt">seed =</span> <span class="dv">1</span>)</span>
-<span id="cb6-2"><a href="#cb6-2"></a></span>
-<span id="cb6-3"><a href="#cb6-3"></a>B =<span class="st"> </span><span class="kw">Q_simulate</span>(<span class="dt">alpha =</span> <span class="fl">.1</span>, <span class="dt">lambda =</span> <span class="kw">c</span>(.<span class="dv">75</span>, <span class="fl">.25</span>), <span class="dt">rep =</span> <span class="dv">1</span>, <span class="dt">popsize =</span> <span class="dv">20</span>, <span class="dt">seed =</span> <span class="dv">2</span>)</span>
-<span id="cb6-4"><a href="#cb6-4"></a></span>
-<span id="cb6-5"><a href="#cb6-5"></a>C =<span class="st"> </span><span class="kw">Q_simulate</span>(<span class="dt">alpha =</span> <span class="dv">5</span>, <span class="dt">lambda =</span> <span class="kw">c</span>(.<span class="dv">75</span>, <span class="fl">.25</span>), <span class="dt">rep =</span> <span class="dv">1</span>, <span class="dt">popsize =</span> <span class="dv">20</span>, <span class="dt">seed =</span> <span class="dv">3</span>)</span>
-<span id="cb6-6"><a href="#cb6-6"></a></span>
-<span id="cb6-7"><a href="#cb6-7"></a>D =<span class="st"> </span><span class="kw">Q_simulate</span>(<span class="dt">alpha =</span> <span class="dv">5</span>, <span class="dt">lambda =</span> <span class="kw">c</span>(.<span class="dv">75</span>, <span class="fl">.25</span>), <span class="dt">rep =</span> <span class="dv">1</span>, <span class="dt">popsize =</span> <span class="dv">20</span>, <span class="dt">seed =</span> <span class="dv">4</span>)</span></code></pre></div>
+<p>For this example, I chose to simulate four <span class="math inline">\(Q\)</span> matrices (<code>A</code>,
+<code>B</code>, <code>C</code>, and <code>D</code>), each with 20
+individuals and with the same vector of mean membership coefficients,
+<span class="math inline">\(\lambda = (.75, .25)\)</span>. This means
+that each <span class="math inline">\(Q\)</span> matrix will have 20
+rows and, on average, individuals from any of the four matrices will
+possess three-quarters of their ancestry from the first ancestral
+cluster, and one-quarter of their ancestry from the second ancestral
+cluster.</p>
+<p>I chose to simulate matrices <code>A</code> and <code>B</code> using
+<span class="math inline">\(\alpha = 0.1\)</span>, which results in
+fairly high variability across membership coefficients, and matrices
+<code>C</code> and <code>D</code> using <span class="math inline">\(\alpha = 5\)</span>, which results in lower
+variability. Properties of the Dirichlet distribution tell us that the
+variance of the <span class="math inline">\(k^{th}\)</span> ancestral
+cluster, <span class="math inline">\(q_k\)</span>, is <span class="math inline">\(Var[q_k] =
+\lambda_k(1-\lambda_k)/(\alpha+1)\)</span>. It follows that, for
+matrices <code>A</code> and <code>B</code>, <span class="math inline">\(Var[q_1] = Var[q_2]=.75\times.25/(.1+1) \approx
+0.17\)</span>. For matrices <code>C</code> and <code>D</code>, <span class="math inline">\(Var[q_1] = Var[q_2] = .75\times.25/(5+1) \approx
+0.03\)</span>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">Q_simulate</span>(<span class="at">alpha =</span> .<span class="dv">1</span>, <span class="at">lambda =</span> <span class="fu">c</span>(.<span class="dv">75</span>, .<span class="dv">25</span>), <span class="at">rep =</span> <span class="dv">1</span>, <span class="at">popsize =</span> <span class="dv">20</span>, <span class="at">seed =</span> <span class="dv">1</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>B <span class="ot">=</span> <span class="fu">Q_simulate</span>(<span class="at">alpha =</span> .<span class="dv">1</span>, <span class="at">lambda =</span> <span class="fu">c</span>(.<span class="dv">75</span>, .<span class="dv">25</span>), <span class="at">rep =</span> <span class="dv">1</span>, <span class="at">popsize =</span> <span class="dv">20</span>, <span class="at">seed =</span> <span class="dv">2</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>C <span class="ot">=</span> <span class="fu">Q_simulate</span>(<span class="at">alpha =</span> <span class="dv">5</span>, <span class="at">lambda =</span> <span class="fu">c</span>(.<span class="dv">75</span>, .<span class="dv">25</span>), <span class="at">rep =</span> <span class="dv">1</span>, <span class="at">popsize =</span> <span class="dv">20</span>, <span class="at">seed =</span> <span class="dv">3</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>D <span class="ot">=</span> <span class="fu">Q_simulate</span>(<span class="at">alpha =</span> <span class="dv">5</span>, <span class="at">lambda =</span> <span class="fu">c</span>(.<span class="dv">75</span>, .<span class="dv">25</span>), <span class="at">rep =</span> <span class="dv">1</span>, <span class="at">popsize =</span> <span class="dv">20</span>, <span class="at">seed =</span> <span class="dv">4</span>)</span></code></pre></div>
 <p>Here is what matrix <code>A</code> looks like:</p>
 <table>
 <thead>
@@ -702,149 +775,260 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </tr>
 </tbody>
 </table>
-<p>The format of this <span class="math inline">\(Q\)</span> matrix is very similar to the format of the ADMIXTURE <span class="math inline">\(Q\)</span> matrix above. The last <span class="math inline">\(K=2\)</span> columns contain the membership coefficients.</p>
+<p>The format of this <span class="math inline">\(Q\)</span> matrix is
+very similar to the format of the ADMIXTURE <span class="math inline">\(Q\)</span> matrix above. The last <span class="math inline">\(K=2\)</span> columns contain the membership
+coefficients.</p>
 </div>
 <div id="visualize-q-matrices" class="section level2">
 <h2>Visualize <span class="math inline">\(Q\)</span> Matrices</h2>
-<p>We visualize these matrices using the function <code>Q_plot</code>, which has two required parameters: a <span class="math inline">\(Q\)</span> matrix (<code>Q</code>) and the number of ancestral clusters (<code>K</code>). The third parameter, <code>arrange</code>, is optional. If <code>arrange = TRUE</code>, the individuals’ are horizontally ordered by the clusters with the greatest mean membership. Below, we accomplish this ordering manually for plot A, and use <code>arrange = TRUE</code> for all subsequent plots. These two methods accomplish the same ordering.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Generate and modify a plot for each Q matrix</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a></span>
-<span id="cb7-3"><a href="#cb7-3"></a>plot_A &lt;-<span class="st"> </span><span class="kw">Q_plot</span>(<span class="dt">Q =</span> A <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(q1),</span>
-<span id="cb7-4"><a href="#cb7-4"></a>                 <span class="dt">K=</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="st">  </span>ggplot2<span class="op">::</span><span class="kw">scale_fill_brewer</span>(<span class="st">&quot;Blues&quot;</span>)</span>
-<span id="cb7-6"><a href="#cb7-6"></a></span>
-<span id="cb7-7"><a href="#cb7-7"></a>plot_B &lt;-<span class="st"> </span><span class="kw">Q_plot</span>(<span class="dt">Q =</span> B, </span>
-<span id="cb7-8"><a href="#cb7-8"></a>                 <span class="dt">K=</span><span class="dv">2</span>,</span>
-<span id="cb7-9"><a href="#cb7-9"></a>                 <span class="dt">arrange =</span> <span class="ot">TRUE</span>) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb7-10"><a href="#cb7-10"></a><span class="st">  </span>ggplot2<span class="op">::</span><span class="kw">scale_fill_brewer</span>(<span class="st">&quot;Blues&quot;</span>)</span>
-<span id="cb7-11"><a href="#cb7-11"></a></span>
-<span id="cb7-12"><a href="#cb7-12"></a>plot_C &lt;-<span class="st"> </span><span class="kw">Q_plot</span>(<span class="dt">Q =</span> C, </span>
-<span id="cb7-13"><a href="#cb7-13"></a>                 <span class="dt">K=</span><span class="dv">2</span>,</span>
-<span id="cb7-14"><a href="#cb7-14"></a>                 <span class="dt">arrange =</span> <span class="ot">TRUE</span>) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb7-15"><a href="#cb7-15"></a><span class="st">  </span>ggplot2<span class="op">::</span><span class="kw">scale_fill_brewer</span>(<span class="st">&quot;Blues&quot;</span>)</span>
-<span id="cb7-16"><a href="#cb7-16"></a></span>
-<span id="cb7-17"><a href="#cb7-17"></a>plot_D &lt;-<span class="st"> </span><span class="kw">Q_plot</span>(<span class="dt">Q =</span> D, </span>
-<span id="cb7-18"><a href="#cb7-18"></a>                 <span class="dt">K=</span><span class="dv">2</span>,</span>
-<span id="cb7-19"><a href="#cb7-19"></a>                 <span class="dt">arrange =</span> <span class="ot">TRUE</span>) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb7-20"><a href="#cb7-20"></a><span class="st">  </span>ggplot2<span class="op">::</span><span class="kw">scale_fill_brewer</span>(<span class="st">&quot;Blues&quot;</span>)</span></code></pre></div>
-<p><code>%&gt;%</code>, the pipe from dplyr, feeds the value on its left-hand side into the function on its right-hand side.</p>
-<p><code>arrange(matrix, var)</code>, a function from dplyr, sorts the rows in <code>matrix</code> according to a column named <code>var</code>. Here, I order individuals in each <span class="math inline">\(Q\)</span> matrix according to their value of <code>q1</code>, but other variables can also be used. Use <code>colnames(Q_matrix_name)</code> to see the column names and decide which to sort by. Matrices can also be sorted by multiple columns (e.g., <code>arrange(matrix, var1, var2)</code>).</p>
-<p><code>scale_fill_brewer()</code>, a function from ggplot2, modifies the color scheme of the plot. Because <code>Q_plot()</code> outputs a ggplot object, you can do lots of modifications!</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Display these plots in a grid</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(plot_A, plot_B, plot_C, plot_D,</span>
-<span id="cb8-3"><a href="#cb8-3"></a>                   <span class="dt">labels =</span> <span class="st">&quot;AUTO&quot;</span>, </span>
-<span id="cb8-4"><a href="#cb8-4"></a>                   <span class="dt">nrow =</span> <span class="dv">1</span>,</span>
-<span id="cb8-5"><a href="#cb8-5"></a>                   <span class="dt">vjust =</span> <span class="dv">2</span>) </span></code></pre></div>
-<p><img src="data:image/png;base64,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I1ARlEB7RqAi6NOcG0BPc/ogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pwEqnH6IMXSnASqcfogxdKcBKpx+iDF0pxrgRqgBNqzNCeBapw+SLE0J4FqnD5IsTQngWqcPkixNCeBapw+SLE0J4FqnD5IsTQngWqcPkixNCeBapw+SLE0J4FqnD5IsTQngWqcPkixNCeBapw+SLE0J4FqnD5IsTQngWqcPkixNCeBapw+SLE0J4FqnD5IsTQngWqcPkixNCeBapw+SLE0J4FqnD5IsTQngWqcPkixNCeBapw+SLE0J4FqnD5IsTQngWqcPkixNCeBapw+SLE0J4FqnD5IsTQngWqcPkixNCeBapw+SLE053WBGqEE2rM0J4FqnD5IsTTn4RfGBo9A2egRKBs9AmWjR6Bs9AiUjR6BstEjUDZ6BMpGj0DZ6BEoGz0CZaNHoGz0CJSN3v8A0UiOXhhi9NgAAAAASUVORK5CYII=" /><!-- --></p>
-<p>We observe that matrices A and B are visually similar, with most individuals from each matrix possessing all of their ancestry in just one of the two clusters (here, all light blue or all dark blue). For a <span class="math inline">\(Q\)</span> matrix with two ancestral clusters, the maximum variability case occurs when every individual (or all but one) has a membership vector of <span class="math inline">\((0,1)\)</span> or <span class="math inline">\((1,0)\)</span> (possessing all of its ancestry in just one of the two clusters). Matrices A and B are close to this maximum case, as they contain just a few individuals with ancestry in multiple clusters.</p>
-<p>Matrices C and D, on the other hand, are comprised of individuals with some ancestry from each cluster. These matrices are closer to the minimum variability case, in which every individual’s membership coefficients are the same as the mean (here, 3/4 dark blue and 1/4 light blue).</p>
-<p>We have now built intuition about what high and low variability <span class="math inline">\(Q\)</span> matrices look like. The statistic <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> quantifies this variability.</p>
+<p>We visualize these matrices using the function <code>Q_plot</code>,
+which has two required parameters: a <span class="math inline">\(Q\)</span> matrix (<code>Q</code>) and the number
+of ancestral clusters (<code>K</code>). The third parameter,
+<code>arrange</code>, is optional. If <code>arrange = TRUE</code>, the
+individuals’ are horizontally ordered by the clusters with the greatest
+mean membership. Below, we accomplish this ordering manually for plot A,
+and use <code>arrange = TRUE</code> for all subsequent plots. These two
+methods accomplish the same ordering.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate and modify a plot for each Q matrix</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>plot_A <span class="ot">&lt;-</span> <span class="fu">Q_plot</span>(<span class="at">Q =</span> A <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(q1),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">K=</span><span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_fill_brewer</span>(<span class="st">&quot;Blues&quot;</span>)<span class="sc">+</span> </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_color_brewer</span>(<span class="st">&quot;Blues&quot;</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>plot_B <span class="ot">&lt;-</span> <span class="fu">Q_plot</span>(<span class="at">Q =</span> B, </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">K=</span><span class="dv">2</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>                 <span class="at">arrange =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_fill_brewer</span>(<span class="st">&quot;Blues&quot;</span>)<span class="sc">+</span> </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_color_brewer</span>(<span class="st">&quot;Blues&quot;</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>plot_C <span class="ot">&lt;-</span> <span class="fu">Q_plot</span>(<span class="at">Q =</span> C, </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>                 <span class="at">K=</span><span class="dv">2</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>                 <span class="at">arrange =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_fill_brewer</span>(<span class="st">&quot;Blues&quot;</span>)<span class="sc">+</span> </span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_color_brewer</span>(<span class="st">&quot;Blues&quot;</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>plot_D <span class="ot">&lt;-</span> <span class="fu">Q_plot</span>(<span class="at">Q =</span> D, </span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>                 <span class="at">K=</span><span class="dv">2</span>,</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>                 <span class="at">arrange =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_fill_brewer</span>(<span class="st">&quot;Blues&quot;</span>)<span class="sc">+</span> </span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_color_brewer</span>(<span class="st">&quot;Blues&quot;</span>)</span></code></pre></div>
+<p><code>%&gt;%</code>, the pipe from dplyr, feeds the value on its
+left-hand side into the function on its right-hand side.</p>
+<p><code>arrange(matrix, var)</code>, a function from dplyr, sorts the
+rows in <code>matrix</code> according to a column named
+<code>var</code>. Here, I order individuals in each <span class="math inline">\(Q\)</span> matrix according to their value of
+<code>q1</code>, but other variables can also be used. Use
+<code>colnames(Q_matrix_name)</code> to see the column names and decide
+which to sort by. Matrices can also be sorted by multiple columns (e.g.,
+<code>arrange(matrix, var1, var2)</code>).</p>
+<p><code>scale_fill_brewer()</code> and
+<code>scale_color_brewer()</code>, functions from ggplot2, modify the
+color scheme of the plot. Because <code>Q_plot()</code> outputs a ggplot
+object, you can do lots of modifications!</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display these plots in a grid</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>cowplot<span class="sc">::</span><span class="fu">plot_grid</span>(plot_A, plot_B, plot_C, plot_D,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">labels =</span> <span class="st">&quot;AUTO&quot;</span>, </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">nrow =</span> <span class="dv">1</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">vjust =</span> <span class="dv">2</span>) </span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>We observe that matrices A and B are visually similar, with most
+individuals from each matrix possessing all of their ancestry in just
+one of the two clusters (here, all light blue or all dark blue). For a
+<span class="math inline">\(Q\)</span> matrix with two ancestral
+clusters, the maximum variability case occurs when every individual (or
+all but one) has a membership vector of <span class="math inline">\((0,1)\)</span> or <span class="math inline">\((1,0)\)</span> (possessing all of its ancestry in
+just one of the two clusters). Matrices A and B are close to this
+maximum case, as they contain just a few individuals with ancestry in
+multiple clusters.</p>
+<p>Matrices C and D, on the other hand, are comprised of individuals
+with some ancestry from each cluster. These matrices are closer to the
+minimum variability case, in which every individual’s membership
+coefficients are the same as the mean (here, 3/4 dark blue and 1/4 light
+blue).</p>
+<p>We have now built intuition about what high and low variability <span class="math inline">\(Q\)</span> matrices look like. The statistic <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> quantifies this
+variability.</p>
 </div>
 <div id="calculate-the-variability-of-each-q-matrix" class="section level2">
 <h2>Calculate the variability of each <span class="math inline">\(Q\)</span> matrix</h2>
-<p>As a preliminary analysis, let’s calculate <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> for each of our four simulated <span class="math inline">\(Q\)</span> matrices. We will do this analysis using the function <code>Q_stat</code>, which accepts two parameters: a <span class="math inline">\(Q\)</span> matrix (<code>Q</code>) and the number of ancestral clusters (<code>K</code>).</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">Q_stat</span>(<span class="dt">Q =</span> A, <span class="dt">K =</span> <span class="dv">2</span>)</span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="co">#&gt; $Fst</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a><span class="co">#&gt; [1] 0.9595213</span></span>
-<span id="cb9-4"><a href="#cb9-4"></a><span class="co">#&gt; </span></span>
-<span id="cb9-5"><a href="#cb9-5"></a><span class="co">#&gt; $FstMax</span></span>
-<span id="cb9-6"><a href="#cb9-6"></a><span class="co">#&gt; [1] 0.9927522</span></span>
-<span id="cb9-7"><a href="#cb9-7"></a><span class="co">#&gt; </span></span>
-<span id="cb9-8"><a href="#cb9-8"></a><span class="co">#&gt; $ratio</span></span>
-<span id="cb9-9"><a href="#cb9-9"></a><span class="co">#&gt; [1] 0.9665264</span></span>
-<span id="cb9-10"><a href="#cb9-10"></a><span class="kw">Q_stat</span>(<span class="dt">Q =</span> B, <span class="dt">K =</span> <span class="dv">2</span>)</span>
-<span id="cb9-11"><a href="#cb9-11"></a><span class="co">#&gt; $Fst</span></span>
-<span id="cb9-12"><a href="#cb9-12"></a><span class="co">#&gt; [1] 0.8301276</span></span>
-<span id="cb9-13"><a href="#cb9-13"></a><span class="co">#&gt; </span></span>
-<span id="cb9-14"><a href="#cb9-14"></a><span class="co">#&gt; $FstMax</span></span>
-<span id="cb9-15"><a href="#cb9-15"></a><span class="co">#&gt; [1] 0.9942423</span></span>
-<span id="cb9-16"><a href="#cb9-16"></a><span class="co">#&gt; </span></span>
-<span id="cb9-17"><a href="#cb9-17"></a><span class="co">#&gt; $ratio</span></span>
-<span id="cb9-18"><a href="#cb9-18"></a><span class="co">#&gt; [1] 0.8349349</span></span>
-<span id="cb9-19"><a href="#cb9-19"></a><span class="kw">Q_stat</span>(<span class="dt">Q =</span> C, <span class="dt">K =</span> <span class="dv">2</span>)</span>
-<span id="cb9-20"><a href="#cb9-20"></a><span class="co">#&gt; $Fst</span></span>
-<span id="cb9-21"><a href="#cb9-21"></a><span class="co">#&gt; [1] 0.119752</span></span>
-<span id="cb9-22"><a href="#cb9-22"></a><span class="co">#&gt; </span></span>
-<span id="cb9-23"><a href="#cb9-23"></a><span class="co">#&gt; $FstMax</span></span>
-<span id="cb9-24"><a href="#cb9-24"></a><span class="co">#&gt; [1] 0.998749</span></span>
-<span id="cb9-25"><a href="#cb9-25"></a><span class="co">#&gt; </span></span>
-<span id="cb9-26"><a href="#cb9-26"></a><span class="co">#&gt; $ratio</span></span>
-<span id="cb9-27"><a href="#cb9-27"></a><span class="co">#&gt; [1] 0.119902</span></span>
-<span id="cb9-28"><a href="#cb9-28"></a><span class="kw">Q_stat</span>(<span class="dt">Q =</span> D, <span class="dt">K =</span> <span class="dv">2</span>)</span>
-<span id="cb9-29"><a href="#cb9-29"></a><span class="co">#&gt; $Fst</span></span>
-<span id="cb9-30"><a href="#cb9-30"></a><span class="co">#&gt; [1] 0.1180898</span></span>
-<span id="cb9-31"><a href="#cb9-31"></a><span class="co">#&gt; </span></span>
-<span id="cb9-32"><a href="#cb9-32"></a><span class="co">#&gt; $FstMax</span></span>
-<span id="cb9-33"><a href="#cb9-33"></a><span class="co">#&gt; [1] 0.9731693</span></span>
-<span id="cb9-34"><a href="#cb9-34"></a><span class="co">#&gt; </span></span>
-<span id="cb9-35"><a href="#cb9-35"></a><span class="co">#&gt; $ratio</span></span>
-<span id="cb9-36"><a href="#cb9-36"></a><span class="co">#&gt; [1] 0.1213456</span></span></code></pre></div>
-<p>For each matrix, the function <code>Q_stat</code> returns <span class="math inline">\(F_{ST}\)</span>, <span class="math inline">\(F_{ST}^{max}\)</span>, and their ratio <span class="math inline">\((F_{ST}/F_{ST}^{max})\)</span>. In population genetics, the statistic <span class="math inline">\(F_{ST}\)</span> is conventionally used to quantify variability in allele frequencies among a collection of subpopulations. Here, we use this statistic to quantify the variability in membership coefficients among a collection of individuals. (See the methods section of the forthcoming paper for a more thorough discussion of this analogy.) Importantly, when the <span class="math inline">\(Q\)</span> matrix contains few individuals, or the mean membership of the most prevalent ancestral cluster is close to <span class="math inline">\(1/K\)</span> (the minimum value) or 1 (the maximum value), the maximum possible value of <span class="math inline">\(F_{ST}\)</span> <span class="math inline">\((F_{ST}^{max})\)</span> can be much less than 1. For this reason, we use the normalized statistic, <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span>, which always ranges between 0 and 1, and can thus be used to compare the variability of multiple <span class="math inline">\(Q\)</span> matrices.</p>
-<p>We observe from the results of <code>Q_stat</code> that matrices <code>A</code> and <code>B</code> have values of <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> greater than 0.8, whereas matrices <code>C</code> and <code>D</code> have values close to 0.12. Is the similarity between <code>C</code> and <code>D</code> the result of random chance? Are the differences in variability between matrices <code>A</code> and <code>B</code> statistically significant?</p>
+<p>As a preliminary analysis, let’s calculate <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> for each of our four
+simulated <span class="math inline">\(Q\)</span> matrices. We will do
+this analysis using the function <code>Q_stat</code>, which accepts two
+parameters: a <span class="math inline">\(Q\)</span> matrix
+(<code>Q</code>) and the number of ancestral clusters
+(<code>K</code>).</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Q_stat</span>(<span class="at">Q =</span> A, <span class="at">K =</span> <span class="dv">2</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $Fst</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.9595213</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $FstMax</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.9927522</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ratio</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.9665264</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">Q_stat</span>(<span class="at">Q =</span> B, <span class="at">K =</span> <span class="dv">2</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $Fst</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.8301276</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $FstMax</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.9942423</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ratio</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.8349349</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="fu">Q_stat</span>(<span class="at">Q =</span> C, <span class="at">K =</span> <span class="dv">2</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $Fst</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.119752</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $FstMax</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.998749</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ratio</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.119902</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="fu">Q_stat</span>(<span class="at">Q =</span> D, <span class="at">K =</span> <span class="dv">2</span>)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $Fst</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.1180898</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $FstMax</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.9731693</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ratio</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.1213456</span></span></code></pre></div>
+<p>For each matrix, the function <code>Q_stat</code> returns <span class="math inline">\(F_{ST}\)</span>, <span class="math inline">\(F_{ST}^{max}\)</span>, and their ratio <span class="math inline">\((F_{ST}/F_{ST}^{max})\)</span>. In population
+genetics, the statistic <span class="math inline">\(F_{ST}\)</span> is
+conventionally used to quantify variability in allele frequencies among
+a collection of subpopulations. Here, we use this statistic to quantify
+the variability in membership coefficients among a collection of
+individuals. (See the methods section of <a href="https://doi.org/10.1101/2021.09.24.461741">the paper</a> for a
+more thorough discussion of this analogy.) Importantly, when the <span class="math inline">\(Q\)</span> matrix contains few individuals, or the
+mean membership of the most prevalent ancestral cluster is close to
+<span class="math inline">\(1/K\)</span> (the minimum value) or 1 (the
+maximum value), the maximum possible value of <span class="math inline">\(F_{ST}\)</span> <span class="math inline">\((F_{ST}^{max})\)</span> can be much less than 1.
+For this reason, we use the normalized statistic, <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span>, which always ranges
+between 0 and 1, and can thus be used to compare the variability of
+multiple <span class="math inline">\(Q\)</span> matrices.</p>
+<p>We observe from the results of <code>Q_stat</code> that matrices
+<code>A</code> and <code>B</code> have values of <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> greater than 0.8,
+whereas matrices <code>C</code> and <code>D</code> have values close to
+0.12. Is the similarity between <code>C</code> and <code>D</code> the
+result of random chance? Are the differences in variability between
+matrices <code>A</code> and <code>B</code> statistically
+significant?</p>
 <p>To answer these questions, we employ <a href="https://en.wikipedia.org/wiki/Bootstrapping_(statistics)">bootstrapping</a>.</p>
 </div>
 <div id="generate-analyze-bootstrap-distributions-of-f_stf_stmax-for-each-matrix" class="section level2">
 <h2>Generate &amp; analyze bootstrap distributions of <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> for each matrix</h2>
-<p>A bootstrap replicate of a <span class="math inline">\(Q\)</span> matrix is a second matrix with the same dimensions whose rows were drawn with replacement from those of the original matrix. By generating many bootstrap replicate matrices and computing <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> for each, we generate a bootstrap distribution of <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span>. This bootstrap distribution is an estimate of the sampling distribution (the distribution obtained by drawing multiple <span class="math inline">\(Q\)</span> matrices from the full population). We can perform statistical tests of identity of the bootstrap means to draw conclusions about whether the original <span class="math inline">\(Q\)</span> matrices have significantly different variabilities.</p>
-<p>To generate a bootstrap distribution for the four simulated <span class="math inline">\(Q\)</span> matrices, I used the function <code>Q_bootstrap</code>, which has four parameters:</p>
+<p>A bootstrap replicate of a <span class="math inline">\(Q\)</span>
+matrix is a second matrix with the same dimensions whose rows were drawn
+with replacement from those of the original matrix. By generating many
+bootstrap replicate matrices and computing <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> for each, we generate
+a bootstrap distribution of <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span>. This bootstrap
+distribution is an estimate of the sampling distribution (the
+distribution obtained by drawing multiple <span class="math inline">\(Q\)</span> matrices from the full population). We
+can perform statistical tests of identity of the bootstrap means to draw
+conclusions about whether the original <span class="math inline">\(Q\)</span> matrices have significantly different
+variabilities.</p>
+<p>To generate a bootstrap distribution for the four simulated <span class="math inline">\(Q\)</span> matrices, I used the function
+<code>Q_bootstrap</code>, which has four parameters:</p>
 <ul>
 <li><p><code>matrices</code>, a named list of <span class="math inline">\(Q\)</span> matrices to analyze</p></li>
-<li><p><code>n_replicates</code>, the number of bootstrap replicates to generate for each <span class="math inline">\(Q\)</span> matrix</p></li>
-<li><p><code>K</code>, the number of ancestral clusters</p></li>
-<li><p><code>seed</code>, an optional number which, if included, is used as the random seed to make the random results reproducible</p></li>
+<li><p><code>n_replicates</code>, the number of bootstrap replicates to
+generate for each <span class="math inline">\(Q\)</span> matrix</p></li>
+<li><p><code>K</code>, the number of ancestral clusters. Can also be a
+vector if the number of ancestral clusters differs among the provided
+<span class="math inline">\(Q\)</span> matrices.</p></li>
+<li><p><code>seed</code>, an optional number which, if included, is used
+as the random seed to make the random results reproducible</p></li>
 </ul>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>bootstrap &lt;-<span class="st"> </span><span class="kw">Q_bootstrap</span>(<span class="dt">matrices =</span> <span class="kw">list</span>(<span class="dt">A =</span> A, <span class="dt">B =</span> B, <span class="dt">C =</span> C, <span class="dt">D =</span> D), </span>
-<span id="cb10-2"><a href="#cb10-2"></a>                  <span class="dt">n_replicates =</span> <span class="dv">100</span>,</span>
-<span id="cb10-3"><a href="#cb10-3"></a>                  <span class="dt">K =</span> <span class="dv">2</span>, </span>
-<span id="cb10-4"><a href="#cb10-4"></a>                  <span class="dt">seed =</span> <span class="dv">1</span>)</span></code></pre></div>
-<p>The output of <code>Q_bootstrap</code>, which I named <code>bootstrap</code>, is a list of the following objects:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>bootstrap <span class="ot">&lt;-</span> <span class="fu">Q_bootstrap</span>(<span class="at">matrices =</span> <span class="fu">list</span>(<span class="at">A =</span> A, <span class="at">B =</span> B, <span class="at">C =</span> C, <span class="at">D =</span> D), </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">n_replicates =</span> <span class="dv">100</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">K =</span> <span class="dv">2</span>, </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">seed =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p>The output of <code>Q_bootstrap</code>, which I named
+<code>bootstrap</code>, is a list of the following objects:</p>
 <ul>
-<li><p><code>bootstrap_replicates</code>: A list of bootstrap replicate matrices for each <span class="math inline">\(Q\)</span> matrix provided</p></li>
-<li><p><code>statistics</code>: A dataframe containing the values of <span class="math inline">\(F_{ST}\)</span>, <span class="math inline">\(F_{ST}^{max}\)</span>, and <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> for each bootstrap replicate matrix</p></li>
-<li><p><code>plot_boxplot</code>, <code>plot_violin</code>, <code>plot_ecdf</code>: A box plot, violin plot, or empirical cumulative distribution function (ECDF) plot of the bootstrap distribution of <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> for each <span class="math inline">\(Q\)</span> matrix</p></li>
-<li><p><code>test_kruskal_wallis</code>: The results of a Kruksal-Wallis test, which tests the identity of all provided bootstrap means</p></li>
-<li><p><code>test_pairwise_wilcox</code>: The results of a Wilcoxon rank-sum test, which tests the identity of pairwise bootstrap means for each pair of matrices</p></li>
+<li><p><code>bootstrap_replicates</code>: A list of bootstrap replicate
+matrices for each <span class="math inline">\(Q\)</span> matrix
+provided</p></li>
+<li><p><code>statistics</code>: A dataframe containing the values of
+<span class="math inline">\(F_{ST}\)</span>, <span class="math inline">\(F_{ST}^{max}\)</span>, and <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> for each bootstrap
+replicate matrix</p></li>
+<li><p><code>plot_boxplot</code>, <code>plot_violin</code>,
+<code>plot_ecdf</code>: A box plot, violin plot, or empirical cumulative
+distribution function (ECDF) plot of the bootstrap distribution of <span class="math inline">\(F_{ST}/F_{ST}^{max}\)</span> for each <span class="math inline">\(Q\)</span> matrix</p></li>
+<li><p><code>test_kruskal_wallis</code>: The results of a Kruksal-Wallis
+test, which tests the identity of all provided bootstrap means</p></li>
+<li><p><code>test_pairwise_wilcox</code>: The results of a Wilcoxon
+rank-sum test, which tests the identity of pairwise bootstrap means for
+each pair of matrices</p></li>
 </ul>
-<p>All three options for visualizing the bootstrap distributions are ggplot objects and can be modified in many ways using tools from the package <code>ggplot2</code>:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(bootstrap<span class="op">$</span>plot_boxplot <span class="op">+</span><span class="st"> </span>ggplot2<span class="op">::</span><span class="kw">ggtitle</span>(<span class="st">&quot;Box Plot&quot;</span>), </span>
-<span id="cb11-2"><a href="#cb11-2"></a>                   bootstrap<span class="op">$</span>plot_violin <span class="op">+</span><span class="st"> </span>ggplot2<span class="op">::</span><span class="kw">ggtitle</span>(<span class="st">&quot;Violin Plot&quot;</span>), </span>
-<span id="cb11-3"><a href="#cb11-3"></a>                   bootstrap<span class="op">$</span>plot_ecdf <span class="op">+</span><span class="st"> </span>ggplot2<span class="op">::</span><span class="kw">ggtitle</span>(<span class="st">&quot;ECDF Plot&quot;</span>), </span>
-<span id="cb11-4"><a href="#cb11-4"></a>                   <span class="dt">nrow =</span> <span class="dv">2</span>, <span class="dt">rel_widths =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>))</span></code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>All three options for visualizing the bootstrap distributions are
+ggplot objects and can be modified in many ways using tools from the
+package <code>ggplot2</code>:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>cowplot<span class="sc">::</span><span class="fu">plot_grid</span>(bootstrap<span class="sc">$</span>plot_boxplot <span class="sc">+</span> ggplot2<span class="sc">::</span><span class="fu">ggtitle</span>(<span class="st">&quot;Box Plot&quot;</span>), </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                   bootstrap<span class="sc">$</span>plot_violin <span class="sc">+</span> ggplot2<span class="sc">::</span><span class="fu">ggtitle</span>(<span class="st">&quot;Violin Plot&quot;</span>), </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                   bootstrap<span class="sc">$</span>plot_ecdf <span class="sc">+</span> ggplot2<span class="sc">::</span><span class="fu">ggtitle</span>(<span class="st">&quot;ECDF Plot&quot;</span>), </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">rel_widths =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>))</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
 </div>
 <div id="use-statistical-tests-to-compare-the-variability-of-multiple-q-matrices" class="section level2">
 <h2>Use statistical tests to compare the variability of multiple <span class="math inline">\(Q\)</span> matrices</h2>
-<p>Comparing these distributions by eye, it seems like the bootstrap distributions of matrices <code>A</code> and <code>B</code> are each quite different from all of the other matrices. <code>C</code> and <code>D</code>, on the other hand, seem quite similar to each other. Rather than relying on our intuition, we can statistically test the similarity of these distributions. Included in the output of <code>Q_bootstrap</code> are the output of two such tests:</p>
+<p>Comparing these distributions by eye, it seems like the bootstrap
+distributions of matrices <code>A</code> and <code>B</code> are each
+quite different from all of the other matrices. <code>C</code> and
+<code>D</code>, on the other hand, seem quite similar to each other.
+Rather than relying on our intuition, we can statistically test the
+similarity of these distributions. Included in the output of
+<code>Q_bootstrap</code> are the output of two such tests:</p>
 <ul>
-<li><p>The Kruskal-Wallis test determines if statistically significant differences exist among a collection of two or more distributions. Its output includes a chi-squared statistic and a p-value.</p></li>
-<li><p>The Wilcoxon rank sum test looks at <em>every pairwise combination of distributions</em>, and for each determines if a statistically significant difference exists between the two distributions. Its output is a matrix of p-values, one for each pair of distributions.</p></li>
+<li><p>The Kruskal-Wallis test determines if statistically significant
+differences exist among a collection of two or more distributions. Its
+output includes a chi-squared statistic and a p-value.</p></li>
+<li><p>The Wilcoxon rank sum test looks at <em>every pairwise
+combination of distributions</em>, and for each determines if a
+statistically significant difference exists between the two
+distributions. Its output is a matrix of p-values, one for each pair of
+distributions.</p></li>
 </ul>
-<p>For both tests, the null hypothesis is that the distributions are the same.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>bootstrap<span class="op">$</span>test_kruskal_wallis</span>
-<span id="cb12-2"><a href="#cb12-2"></a><span class="co">#&gt; </span></span>
-<span id="cb12-3"><a href="#cb12-3"></a><span class="co">#&gt;  Kruskal-Wallis rank sum test</span></span>
-<span id="cb12-4"><a href="#cb12-4"></a><span class="co">#&gt; </span></span>
-<span id="cb12-5"><a href="#cb12-5"></a><span class="co">#&gt; data:  all_stats$ratio by all_stats$Matrix</span></span>
-<span id="cb12-6"><a href="#cb12-6"></a><span class="co">#&gt; Kruskal-Wallis chi-squared = 324.48, df = 3, p-value &lt; 2.2e-16</span></span>
-<span id="cb12-7"><a href="#cb12-7"></a></span>
-<span id="cb12-8"><a href="#cb12-8"></a>bootstrap<span class="op">$</span>test_pairwise_wilcox</span>
-<span id="cb12-9"><a href="#cb12-9"></a><span class="co">#&gt; </span></span>
-<span id="cb12-10"><a href="#cb12-10"></a><span class="co">#&gt;  Pairwise comparisons using Wilcoxon rank sum test with continuity correction </span></span>
-<span id="cb12-11"><a href="#cb12-11"></a><span class="co">#&gt; </span></span>
-<span id="cb12-12"><a href="#cb12-12"></a><span class="co">#&gt; data:  all_stats$ratio and all_stats$Matrix </span></span>
-<span id="cb12-13"><a href="#cb12-13"></a><span class="co">#&gt; </span></span>
-<span id="cb12-14"><a href="#cb12-14"></a><span class="co">#&gt;   A      B      C   </span></span>
-<span id="cb12-15"><a href="#cb12-15"></a><span class="co">#&gt; B &lt;2e-16 -      -   </span></span>
-<span id="cb12-16"><a href="#cb12-16"></a><span class="co">#&gt; C &lt;2e-16 &lt;2e-16 -   </span></span>
-<span id="cb12-17"><a href="#cb12-17"></a><span class="co">#&gt; D &lt;2e-16 &lt;2e-16 0.34</span></span>
-<span id="cb12-18"><a href="#cb12-18"></a><span class="co">#&gt; </span></span>
-<span id="cb12-19"><a href="#cb12-19"></a><span class="co">#&gt; P value adjustment method: holm</span></span></code></pre></div>
-<p><strong>The results of these tests support the claim that significant differences exist in the variability of all pairs of matrices except the pair containing matrices <code>C</code> and <code>D</code>.</strong></p>
-<p>You cannot make comparisons if only one <span class="math inline">\(Q\)</span> matrix is provided. If only one matrix is provided to <code>Q_bootstrap</code>, the entries <code>test_kruskal_wallis</code> and <code>test_pairwise_wilcox</code> will contain the text <em>“This statistical test can only be performed if a list of matrices is provided.”</em> instead of the results of a statistical test.</p>
+<p>For both tests, the null hypothesis is that the distributions are the
+same.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bootstrap<span class="sc">$</span>test_kruskal_wallis</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Kruskal-Wallis rank sum test</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; data:  all_stats$ratio by all_stats$Matrix</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Kruskal-Wallis chi-squared = 324.48, df = 3, p-value &lt; 2.2e-16</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>bootstrap<span class="sc">$</span>test_pairwise_wilcox</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Pairwise comparisons using Wilcoxon rank sum test with continuity correction </span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; data:  all_stats$ratio and all_stats$Matrix </span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   A      B      C   </span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; B &lt;2e-16 -      -   </span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; C &lt;2e-16 &lt;2e-16 -   </span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; D &lt;2e-16 &lt;2e-16 0.34</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; P value adjustment method: holm</span></span></code></pre></div>
+<p><strong>The results of these tests support the claim that significant
+differences exist in the variability of all pairs of matrices except the
+pair containing matrices <code>C</code> and <code>D</code>.</strong></p>
+<p>You cannot make comparisons if only one <span class="math inline">\(Q\)</span> matrix is provided. If only one matrix
+is provided to <code>Q_bootstrap</code>, the entries
+<code>test_kruskal_wallis</code> and <code>test_pairwise_wilcox</code>
+will contain the text <em>“This statistical test can only be performed
+if a list of matrices is provided.”</em> instead of the results of a
+statistical test.</p>
 </div>
 <div id="final-thoughts" class="section level2">
 <h2>Final Thoughts</h2>
-<p>This concludes the introduction to the package FSTruct–we hope you found it helpful. For more information, see the forthcoming paper by Maike Morrison, Nicolas Alcala, and Noah Rosenberg. Or, in the R console, type <code>?FSTruct::Q_...</code> to read the documentation for particular functions (e.g. <code>?FSTruct::Q_bootstrap</code>).</p>
+<p>This concludes the introduction to the package FSTruct–we hope you
+found it helpful. For more information, see the paper <a href="https://doi.org/10.1111/1755-0998.13647">“FSTruct: an FST-based
+tool for measuring ancestry variation in inference of population
+structure”</a> or the <a href="https://maikemorrison.com/files/fstruct-manual.pdf">FSTruct
+manual</a>. Or, in the R console, type <code>?FSTruct::Q_...</code> to
+read the documentation for particular functions
+(e.g. <code>?FSTruct::Q_bootstrap</code>).</p>
 </div>
 
 

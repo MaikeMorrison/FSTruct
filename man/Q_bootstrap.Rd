@@ -4,7 +4,7 @@
 \alias{Q_bootstrap}
 \title{Generate and analyze bootstrap replicates of one or more Q matrices}
 \usage{
-Q_bootstrap(matrices, n_replicates, K, seed)
+Q_bootstrap(matrices, n_replicates, K = ncol(matrices[[1]]), seed)
 }
 \arguments{
 \item{matrices}{A dataframe, matrix, or array representing a Q matrix, or a (possibly named) list of arbitrarily many such objects. For each Q matrix, matrix rows represent an individual and the last \code{K} columns contain individual membership coefficients (when restricted to the last \code{K} columns, the rows must sum to approximately 1). If the matrices are not named (e.g., \code{matrices = list(matrix1, matrix2)} instead of \code{matrices = list(A = matrix1, B = matrix2)}), the matrices will be numbered in the order they are provided in the list.}
