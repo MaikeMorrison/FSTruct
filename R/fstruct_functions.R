@@ -458,7 +458,7 @@ Q_bootstrap <- function(matrices, n_replicates, K=ncol(matrices[[1]]), seed) {
 
   plot_ecdf <- ggplot2::ggplot(data = all_stats) +
     ggplot2::stat_ecdf(ggplot2::aes(x = .data$ratio, color = .data$Matrix)) +
-    ggplot2::xlab(latex2exp::TeX("F_{ST}/F_{ST}^{max}")) +
+    ggplot2::xlab(expression(F[ST]/F[ST]^{max})) +
     ggplot2::ylab("Cumulative Probability") +
     ggplot2::xlim(0, 1) +
     ggplot2::theme_bw() +
@@ -469,7 +469,7 @@ Q_bootstrap <- function(matrices, n_replicates, K=ncol(matrices[[1]]), seed) {
     ggplot2::aes(x = .data$Matrix, y = .data$ratio)
   ) +
     ggplot2::geom_boxplot() +
-    ggplot2::ylab(latex2exp::TeX("F_{ST}/F_{ST}^{max}")) +
+    ggplot2::ylab(expression(F[ST]/F[ST]^{max})) +
     ggplot2::xlab("") +
     ggplot2::theme_bw()
 
@@ -482,7 +482,7 @@ Q_bootstrap <- function(matrices, n_replicates, K=ncol(matrices[[1]]), seed) {
   ) +
     ggplot2::geom_violin(scale = "width") +
     ggplot2::geom_boxplot(width = 0.3) +
-    ggplot2::ylab(latex2exp::TeX("F_{ST}/F_{ST}^{max}")) +
+    ggplot2::ylab(expression(F[ST]/F[ST]^{max})) +
     ggplot2::xlab("") +
     ggplot2::theme_bw()
 
