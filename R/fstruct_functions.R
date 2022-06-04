@@ -243,6 +243,7 @@ Q_stat <- function(Q, K=ncol(Q)) {
 #' @param n_replicates The number of bootstrap replicate matrices to generate for each provided Q matrix.
 #' @param K The number of ancestral clusters in each provided Q matrix, or a vector of such K values if the value of Q differs between matrices. If a single K is provided, each individual in every matrix must have \code{K} membership coefficients. If a vector of multiple K values is provided, each must correspond to a Q matrix in \code{matrices} and be provided in the same order as the matrices.
 #' @param seed Optional; sets the random seed. Use if reproducibility of random results is desired.
+#' @param matrix_ID_col Optional; Use if \code{matrices} is a single matrix containing multiple Q matrices of identical dimension stacked vertically. \code{matrix_ID_col} is the name of the column in this matrix describing which Q matrix each row belongs to. If the matrix was simulated using \code{Q_simulate} with a \code{rep > 1}, \code{matrix_ID_col = "Pop"}.
 #'
 #' @return A named list containing the following entries:
 #' \itemize{
@@ -320,9 +321,11 @@ Q_stat <- function(Q, K=ncol(Q)) {
 #' # each of the other distributions:
 #' bs$test_pairwise_wilcox
 #' @importFrom dplyr %>%
+#' @importFrom dplyr mutate
+#' @importFrom dplyr filter
 #' @importFrom rlang .data
 #' @export
-Q_bootstrap <- function(matrices, n_replicates, K=ncol(matrices[[1]]), seed) {
+Q_bootstrap <- function(matrices, n_replicates, K=ncol(matrices[[1]]), seed, matrix_ID_col) {
   . <- NULL # to please R command check
 
   # set seed
@@ -331,9 +334,32 @@ Q_bootstrap <- function(matrices, n_replicates, K=ncol(matrices[[1]]), seed) {
     set.seed(seed)
   }
 
+  # If matrix_ID_col provided, create a new matrices list
+  # which converts the long single matrix to a list of matrices.
+
+  if(!missing(matrix_ID_col)){
+    # the true K, if K was not provided, will be nrow(Q) - 1 since one of the columns is matrix_ID_col
+    if(missing(K)){ K = K - 1}
+
+    Qnames <- unique(matrices %>% select(matrix_ID_col) %>% unlist)
+
+    matrix_list <- vector("list", length(Qnames))
+    i = 1
+    for(matrix in Qnames){
+      matrix_list[[i]] <- dplyr::filter(dplyr::mutate(matrices, "matrix_ID_col" = get(matrix_ID_col)),
+                                 matrix_ID_col == matrix) %>%
+        select(-"matrix_ID_col")
+      i = i +1
+    }
+    names(matrix_list) <- Qnames
+
+    matrices <- matrix_list
+  }
+
+
   # Do computations if matrices = a single matrix ---------------------------------------
 
-  if (is.data.frame(matrices) | is.array(matrices) | length(matrices) == 1) {
+  if ((is.data.frame(matrices) | is.array(matrices) | length(matrices) == 1) & missing(matrix_ID_col)) {
     n_matrix <- 1
 
     names <- "Q"
