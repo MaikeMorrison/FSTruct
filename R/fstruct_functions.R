@@ -563,7 +563,7 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed, group) {
 #'
 #' Simulates Q matrices by drawing vectors of membership coefficients from a Dirichlet distribution parameterized by two variables: \eqn{\alpha}, which controls variability, and \eqn{\lambda=(\lambda_1, \lambda_2, ...., \lambda_K)} which controls the mean of each of the K ancestry coefficients.
 #'
-#' @param alpha A number greater than 0 that sets the variability of the membership coefficients. The variance of coefficient k is Var[x_k] = \eqn{\lambda_k(1-\lambda_k)/(\alpha+1)}. Larger values of \eqn{\alpha} lead to lower variability. \code{alpha} can also be a numeric vector, in which case \code{rep} matrices are simulated for each entry of \code{alpha}.
+#' @param alpha A number greater than 0 that sets the variability of the membership coefficients under the Dirichlet model. The variance of coefficient k is Var[x_k] = \eqn{\lambda_k(1-\lambda_k)/(\alpha+1)}. Larger values of \eqn{\alpha} lead to lower variability. \code{alpha} can also be a numeric vector, in which case \code{rep} matrices are simulated for each entry of \code{alpha}.
 #' @param lambda A vector that sets the mean membership of each ancestral cluster across the population. The vector must sum to 1.
 #' @param rep The number of Q matrices to generate.
 #' @param popsize The number of individuals to include in each Q matrix.

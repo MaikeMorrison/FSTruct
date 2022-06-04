@@ -238,7 +238,7 @@ To generate a bootstrap distribution for the four simulated $Q$ matrices, I used
 
 * `seed`, an optional number which, if included, is used as the random seed to make the random results reproducible
 
-*`Q_bootstrap` can also take as its `matrices` input a single matrix containing either one or multiple groups for comparison. If the matrix contains individuals from multiple groups which you wish to compare, you must also provide as `Q_bootstrap`'s `group` argument the name of the column specifying which group each row belongs to.
+*`Q_bootstrap` can also take as its `matrices` input a single matrix containing either one or multiple groups for comparison. If the matrix contains individuals from multiple groups which you wish to compare, you must also provide a `group` argument, the name of the column specifying which group each matrix row (individual) belongs to. See the advanced note at the end of this document for more details.
 
 **If `K` is not provided, `Q_bootstrap` will assume that `K` is equal to the number of columns in the first matrix provided. 
 
@@ -292,14 +292,9 @@ bootstrap$test_pairwise_wilcox
 
 You cannot make comparisons if only one $Q$ matrix is provided. If only one matrix is provided to `Q_bootstrap`, the entries `test_kruskal_wallis` and `test_pairwise_wilcox` will contain the text *"This statistical test can only be performed if a list of matrices is provided."* instead of the results of a statistical test.
 
-
-## Final Thoughts
-
-This concludes the introduction to the package FSTruct--we hope you found it helpful. For more information, see the paper ["FSTruct: an FST-based tool for measuring ancestry variation in inference of population structure"](https://doi.org/10.1111/1755-0998.13647) or the [FSTruct manual](https://maikemorrison.com/files/fstruct-manual.pdf). Or, in the R console, type `?FSTruct::Q_...` to read the documentation for particular functions (e.g. `?FSTruct::Q_bootstrap`). 
-
 ## Advanced note on the usage of `Q_bootstrap`
 
-We noted above that `Q_bootstrap` can take as its `matrices` argument one matrix which contains individuals from multiple groups we wish to compare. This analysis is relevant if we want to compare the ancestry variability among multiple groups based on the output of programs such as STRUCTURE or ADMIXTURE, which generate one $Q$ matrix for all individuals, with a column corresponding to the group each individual belongs to. 
+We noted above that `Q_bootstrap` can take as its `matrices` argument one matrix which contains individuals from multiple groups we wish to compare. This analysis is relevant if we want to compare the ancestry variability among multiple groups based on the output of programs such as STRUCTURE or ADMIXTURE, which generate one $Q$ matrix for all individuals, with a column corresponding to the group each individual belongs to.
 
 The function `Q_simulate` generates a matrix of this same form. If `rep>1` and/or `alpha` is a vector with more than one entry, `Q_simulate` will generate one matrix containing `rep` times `length(alpha)` total groups of `popsize` individuals, stacked vertically. The column `Pop` of the output is defined as `alpha_rep` (e.g., for the second repetition of a matrix with `alpha = 10`, `Pop=10_2`), and specifies what alpha/rep combination each simulated individual belongs to.
 
@@ -322,4 +317,9 @@ bootstrap2 <- Q_bootstrap(matrices = Q, n_replicates = 100, K = 3, seed = 1, gro
 bootstrap2$plot_boxplot
 bootstrap2$test_pairwise_wilcox
 ```
+
+## Concluding Thoughts
+
+This concludes the introduction to the package FSTruct--we hope you found it helpful. For more information, see the paper ["FSTruct: an FST-based tool for measuring ancestry variation in inference of population structure"](https://doi.org/10.1111/1755-0998.13647) or the [FSTruct manual](https://maikemorrison.com/files/fstruct-manual.pdf). Or, in the R console, type `?FSTruct::Q_...` to read the documentation for particular functions (e.g. `?FSTruct::Q_bootstrap`). 
+
 

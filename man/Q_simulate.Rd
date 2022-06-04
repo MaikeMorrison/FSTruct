@@ -7,7 +7,7 @@
 Q_simulate(alpha, lambda, rep, popsize, seed)
 }
 \arguments{
-\item{alpha}{A number that sets the variability of the membership coefficients. The variance of coefficient k is Var[x_k] = \eqn{\lambda_k/(\alpha+1)}. Larger values of \eqn{\alpha} lead to lower variability.}
+\item{alpha}{A number greater than 0 that sets the variability of the membership coefficients under the Dirichlet model. The variance of coefficient k is Var[x_k] = \eqn{\lambda_k(1-\lambda_k)/(\alpha+1)}. Larger values of \eqn{\alpha} lead to lower variability. \code{alpha} can also be a numeric vector, in which case \code{rep} matrices are simulated for each entry of \code{alpha}.}
 
 \item{lambda}{A vector that sets the mean membership of each ancestral cluster across the population. The vector must sum to 1.}
 
