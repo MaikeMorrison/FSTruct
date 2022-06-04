@@ -4,16 +4,18 @@
 \alias{Q_bootstrap}
 \title{Generate and analyze bootstrap replicates of one or more Q matrices}
 \usage{
-Q_bootstrap(matrices, n_replicates, K = ncol(matrices[[1]]), seed)
+Q_bootstrap(matrices, n_replicates, K, seed, group)
 }
 \arguments{
-\item{matrices}{A dataframe, matrix, or array representing a Q matrix, or a (possibly named) list of arbitrarily many such objects. For each Q matrix, matrix rows represent an individual and the last \code{K} columns contain individual membership coefficients (when restricted to the last \code{K} columns, the rows must sum to approximately 1). If the matrices are not named (e.g., \code{matrices = list(matrix1, matrix2)} instead of \code{matrices = list(A = matrix1, B = matrix2)}), the matrices will be numbered in the order they are provided in the list.}
+\item{matrices}{A dataframe, matrix, or array representing a Q matrix or a (possibly named) list of arbitrarily many Q matrices. For each Q matrix, matrix rows represent individuals and the last \code{K} columns contain individual membership coefficients (when restricted to the last \code{K} columns, the rows must sum to approximately 1). If the matrices are not named (e.g., \code{matrices = list(matrix1, matrix2)} instead of \code{matrices = list(A = matrix1, B = matrix2)}), the matrices will be numbered in the order they are provided in the list. If \code{matrices} is a single matrix, dataframe, or array and \code{group} is specified, the matrix will be split into multiple Q matrices, one for each distinct value of the column \code{group}, which will each be analyzed separately.}
 
 \item{n_replicates}{The number of bootstrap replicate matrices to generate for each provided Q matrix.}
 
-\item{K}{The number of ancestral clusters in each provided Q matrix, or a vector of such K values if the value of Q differs between matrices. If a single K is provided, each individual in every matrix must have \code{K} membership coefficients. If a vector of multiple K values is provided, each must correspond to a Q matrix in \code{matrices} and be provided in the same order as the matrices.}
+\item{K}{Optional; the number of ancestral clusters in each provided Q matrix, or a vector of such K values if the value of Q differs between matrices. If a single K is provided, each individual in every matrix must have \code{K} membership coefficients. If a vector of multiple K values is provided, each must correspond to a Q matrix in \code{matrices} and be provided in the same order as the matrices. The default value of \code{K} is the number of columns in the matrix, the number of columns in the first matrix if a list is provided, or the number of columns minus 1 if \code{group} is specified but \code{K} is not.}
 
-\item{seed}{Optional; sets the random seed. Use if reproducibility of random results is desired.}
+\item{seed}{Optional; a number to set as the random seed. Use if reproducibility of random results is desired.}
+
+\item{group}{Optional; a string specifying the name of the column that describes which group each row (individual) belongs to. Use if \code{matrices} is a single matrix containing multiple groups of individuals you wish to compare. If the matrix was simulated using \code{Q_simulate} with \code{rep > 1}, \code{group = "Pop"}.}
 }
 \value{
 A named list containing the following entries:

@@ -239,11 +239,11 @@ Q_stat <- function(Q, K=ncol(Q)) {
 #'
 #' Generates bootstrap replicate Q matrices, computes Fst/FstMax for each bootstrap replicate, produces several plots of the bootstrap distributions of Fst/FstMax for each provided Q matrix, and runs two statistical tests comparing these bootstrap distributions. The tests comparing bootstrap distributions of Fst/FstMax facilitate statistical comparison of the variability in each of multiple Q matrices.
 #'
-#' @param matrices A dataframe, matrix, or array representing a Q matrix, or a (possibly named) list of arbitrarily many such objects. For each Q matrix, matrix rows represent an individual and the last \code{K} columns contain individual membership coefficients (when restricted to the last \code{K} columns, the rows must sum to approximately 1). If the matrices are not named (e.g., \code{matrices = list(matrix1, matrix2)} instead of \code{matrices = list(A = matrix1, B = matrix2)}), the matrices will be numbered in the order they are provided in the list.
+#' @param matrices A dataframe, matrix, or array representing a Q matrix or a (possibly named) list of arbitrarily many Q matrices. For each Q matrix, matrix rows represent individuals and the last \code{K} columns contain individual membership coefficients (when restricted to the last \code{K} columns, the rows must sum to approximately 1). If the matrices are not named (e.g., \code{matrices = list(matrix1, matrix2)} instead of \code{matrices = list(A = matrix1, B = matrix2)}), the matrices will be numbered in the order they are provided in the list. If \code{matrices} is a single matrix, dataframe, or array and \code{group} is specified, the matrix will be split into multiple Q matrices, one for each distinct value of the column \code{group}, which will each be analyzed separately.
 #' @param n_replicates The number of bootstrap replicate matrices to generate for each provided Q matrix.
-#' @param K The number of ancestral clusters in each provided Q matrix, or a vector of such K values if the value of Q differs between matrices. If a single K is provided, each individual in every matrix must have \code{K} membership coefficients. If a vector of multiple K values is provided, each must correspond to a Q matrix in \code{matrices} and be provided in the same order as the matrices.
-#' @param seed Optional; sets the random seed. Use if reproducibility of random results is desired.
-#' @param matrix_ID_col Optional; Use if \code{matrices} is a single matrix containing multiple Q matrices of identical dimension stacked vertically. \code{matrix_ID_col} is the name of the column in this matrix describing which Q matrix each row belongs to. If the matrix was simulated using \code{Q_simulate} with a \code{rep > 1}, \code{matrix_ID_col = "Pop"}.
+#' @param K Optional; the number of ancestral clusters in each provided Q matrix, or a vector of such K values if the value of Q differs between matrices. If a single K is provided, each individual in every matrix must have \code{K} membership coefficients. If a vector of multiple K values is provided, each must correspond to a Q matrix in \code{matrices} and be provided in the same order as the matrices. The default value of \code{K} is the number of columns in the matrix, the number of columns in the first matrix if a list is provided, or the number of columns minus 1 if \code{group} is specified but \code{K} is not.
+#' @param seed Optional; a number to set as the random seed. Use if reproducibility of random results is desired.
+#' @param group Optional; a string specifying the name of the column that describes which group each row (individual) belongs to. Use if \code{matrices} is a single matrix containing multiple groups of individuals you wish to compare. If the matrix was simulated using \code{Q_simulate} with \code{rep > 1}, \code{group = "Pop"}.
 #'
 #' @return A named list containing the following entries:
 #' \itemize{
@@ -325,7 +325,7 @@ Q_stat <- function(Q, K=ncol(Q)) {
 #' @importFrom dplyr filter
 #' @importFrom rlang .data
 #' @export
-Q_bootstrap <- function(matrices, n_replicates, K=ncol(matrices[[1]]), seed, matrix_ID_col) {
+Q_bootstrap <- function(matrices, n_replicates, K, seed, group) {
   . <- NULL # to please R command check
 
   # set seed
@@ -334,21 +334,21 @@ Q_bootstrap <- function(matrices, n_replicates, K=ncol(matrices[[1]]), seed, mat
     set.seed(seed)
   }
 
-  # If matrix_ID_col provided, create a new matrices list
+  # If group provided, create a new matrices list
   # which converts the long single matrix to a list of matrices.
 
-  if(!missing(matrix_ID_col)){
-    # the true K, if K was not provided, will be nrow(Q) - 1 since one of the columns is matrix_ID_col
-    if(missing(K)){ K = K - 1}
+  if(!missing(group)){
+    # the true K, if K was not provided, will be nrow(Q) - 1 since one of the columns is group
+    if(missing(K)){ K = ncol(matrices) - 1}
 
-    Qnames <- unique(matrices %>% select(matrix_ID_col) %>% unlist)
+    Qnames <- unique(matrices %>% select(group) %>% unlist)
 
     matrix_list <- vector("list", length(Qnames))
     i = 1
     for(matrix in Qnames){
-      matrix_list[[i]] <- dplyr::filter(dplyr::mutate(matrices, "matrix_ID_col" = get(matrix_ID_col)),
-                                 matrix_ID_col == matrix) %>%
-        select(-"matrix_ID_col")
+      matrix_list[[i]] <- dplyr::filter(dplyr::mutate(matrices, "group" = get(group)),
+                                 group == matrix) %>%
+        select(-"group")
       i = i +1
     }
     names(matrix_list) <- Qnames
@@ -359,7 +359,11 @@ Q_bootstrap <- function(matrices, n_replicates, K=ncol(matrices[[1]]), seed, mat
 
   # Do computations if matrices = a single matrix ---------------------------------------
 
-  if ((is.data.frame(matrices) | is.array(matrices) | length(matrices) == 1) & missing(matrix_ID_col)) {
+  if ((is.data.frame(matrices) | is.array(matrices) | length(matrices) == 1) & missing(group)) {
+    if(missing(K)){
+      K = ncol(matrices)
+    }
+
     n_matrix <- 1
 
     names <- "Q"
@@ -390,6 +394,9 @@ Q_bootstrap <- function(matrices, n_replicates, K=ncol(matrices[[1]]), seed, mat
 
     # Do computations if matrices = a list ---------------------------------------------
   } else if (is.list(matrices)) {
+    if(missing(K)){
+      K = ncol(matrices[[1]])
+    }
     n_matrix <- length(matrices)
     K.list <- K
 
@@ -556,7 +563,7 @@ Q_bootstrap <- function(matrices, n_replicates, K=ncol(matrices[[1]]), seed, mat
 #'
 #' Simulates Q matrices by drawing vectors of membership coefficients from a Dirichlet distribution parameterized by two variables: \eqn{\alpha}, which controls variability, and \eqn{\lambda=(\lambda_1, \lambda_2, ...., \lambda_K)} which controls the mean of each of the K ancestry coefficients.
 #'
-#' @param alpha A number that sets the variability of the membership coefficients. The variance of coefficient k is Var[x_k] = \eqn{\lambda_k/(\alpha+1)}. Larger values of \eqn{\alpha} lead to lower variability.
+#' @param alpha A number greater than 0 that sets the variability of the membership coefficients. The variance of coefficient k is Var[x_k] = \eqn{\lambda_k(1-\lambda_k)/(\alpha+1)}. Larger values of \eqn{\alpha} lead to lower variability. \code{alpha} can also be a numeric vector, in which case \code{rep} matrices are simulated for each entry of \code{alpha}.
 #' @param lambda A vector that sets the mean membership of each ancestral cluster across the population. The vector must sum to 1.
 #' @param rep The number of Q matrices to generate.
 #' @param popsize The number of individuals to include in each Q matrix.
