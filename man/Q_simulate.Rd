@@ -4,26 +4,26 @@
 \alias{Q_simulate}
 \title{Simulate one or more Q matrices using the Dirichlet distribution}
 \usage{
-Q_simulate(alpha, lambda, rep, popsize, seed)
+Q_simulate(alpha, lambda, popsize, rep = 1, seed)
 }
 \arguments{
-\item{alpha}{A number greater than 0 that sets the variability of the membership coefficients under the Dirichlet model. The variance of coefficient k is Var[x_k] = \eqn{\lambda_k(1-\lambda_k)/(\alpha+1)}. Larger values of \eqn{\alpha} lead to lower variability. \code{alpha} can also be a numeric vector, in which case \code{rep} matrices are simulated for each entry of \code{alpha}.}
+\item{alpha}{A number greater than 0 that sets the variability of the membership coefficients under the Dirichlet model. The variance of coefficient k is \eqn{Var[x_k] = \lambda_k(1-\lambda_k)/(\alpha+1)}. Larger values of \eqn{\alpha} lead to lower variability. \code{alpha} can also be a numeric vector, in which case \code{rep} groups of \code{popsize} rows are simulated for each entry of \code{alpha}.}
 
 \item{lambda}{A vector that sets the mean membership of each ancestral cluster across the population. The vector must sum to 1.}
 
-\item{rep}{The number of Q matrices to generate.}
+\item{popsize}{The number of individuals to include in each population.}
 
-\item{popsize}{The number of individuals to include in each Q matrix.}
+\item{rep}{The number of populations to generate. Default is 1.}
 
 \item{seed}{Optional; sets the random seed. Use if reproducibility of random results is desired.}
 }
 \value{
-A data frame containing the simulated Q matrices. Each row represents a single simulated individual. The data frame has the following columns
+A data frame containing the simulated ancestry vectors. Each row represents a single simulated individual. The data frame has the following columns
 \itemize{
-\item \code{rep}: Which random Q matrix the row belongs to (a number between 1 and the parameter \code{rep})
-\item \code{ind}: Which individual in each Q matrix the row corresponds to (a number between 1 and the parameter \code{popsize})
-\item \code{alpha}: The alpha value used to simulate the Q matrix.
-\item \code{Pop}: alpha_rep (where rep and alpha are the first and third columns as described in this list). Serves as a unique identifier for each Q matrix (useful if running simulations with many different values of \eqn{\alpha}).
+\item \code{rep}: Which population the row belongs to (a number between 1 and the parameter \code{rep})
+\item \code{ind}: Which individual in each population the row corresponds to (a number between 1 and the parameter \code{popsize})
+\item \code{alpha}: The alpha value used for that population.
+\item \code{Pop}: alpha_rep (where rep and alpha are the first and third columns as described in this list). Serves as a unique identifier for each population.
 \item \code{spacer}: a repeated ":" to make simulated Q matrices match output of population structure inference software.
 \item \code{q1, q2, etc.}: Membership coefficients (sum to 1).
 }
@@ -32,7 +32,7 @@ A data frame containing the simulated Q matrices. Each row represents a single s
 Simulates Q matrices by drawing vectors of membership coefficients from a Dirichlet distribution parameterized by two variables: \eqn{\alpha}, which controls variability, and \eqn{\lambda=(\lambda_1, \lambda_2, ...., \lambda_K)} which controls the mean of each of the K ancestry coefficients.
 }
 \examples{
-# Simulate 100 random Q matrices.
+# Simulate ancestry for 100 random populations of 50 individuals.
 # In this example, each Q matrix has
 # 100 individuals.
 # On average these individuals have
@@ -43,11 +43,12 @@ Simulates Q matrices by drawing vectors of membership coefficients from a Dirich
 # Here lambda_1 = 1/2,
 #      lambda_2 = lambda_3 = 1/4
 
-Q_list <- Q_simulate(
+Q <- Q_simulate(
   alpha = 1,
   lambda = c(1 / 2, 1 / 4, 1 / 4),
   rep = 100,
   popsize = 50,
   seed = 1
 )
+
 }

@@ -127,7 +127,7 @@ The function `Q_simulate` has four parameters:
 
 * `lambda`, a vector that controls the mean membership of each ancestral cluster.
 
-* `rep`, the number of matrices to simulate.
+* `rep`, the number of populations to simulate.
 
 * `popsize`, the number of individuals to put in the $Q$ matrix.
 
@@ -135,9 +135,9 @@ The function `Q_simulate` has four parameters:
 
 For this example, I chose to simulate four $Q$ matrices (`A`, `B`, `C`, and `D`), each with 20 individuals and with the same vector of mean membership coefficients, $\lambda = (.75, .25)$. This means that each $Q$ matrix will have 20 rows and, on average, individuals from any of the four matrices will possess three-quarters of their ancestry from the first ancestral cluster, and one-quarter of their ancestry from the second ancestral cluster. 
 
-I chose to simulate matrices `A` and `B` using $\alpha = 0.1$, which results in fairly high variability across membership coefficients, and matrices `C` and `D` using $\alpha = 10$, which results in lower variability. Properties of the Dirichlet distribution tell us that the variance of the $k^{th}$ ancestral cluster, $q_k$, is $Var[q_k] = \lambda_k(1-\lambda_k)/(\alpha+1)$. It follows that, for matrices `A` and `B`, $Var[q_1] = Var[q_2]=.75\times.25/(.1+1) \approx 0.17$. For matrices `C` and `D`, $Var[q_1] = Var[q_2] = .75\times.25/(5+1) \approx 0.02$. 
+I chose to simulate matrices `A` and `B` using $\alpha = 0.1$, which results in fairly high variability across membership coefficients, and matrices `C` and `D` using $\alpha = 10$, which results in lower variability. Properties of the Dirichlet distribution tell us that the variance of the $k^{th}$ ancestral cluster, $q_k$, is $Var[q_k] = \lambda_k(1-\lambda_k)/(\alpha+1)$. It follows that, for matrices `A` and `B`, $Var[q_1] = Var[q_2]=.75\times.25/(.1+1) \approx 0.17$. For matrices `C` and `D`, $Var[q_1] = Var[q_2] = .75\times.25/(10+1) \approx 0.02$. 
 
-*`alpha` can also be a numeric vector. See advanced section at end of document for more details.
+*`alpha` can also be a numeric vector. See the "Advanced note on the usage of `Q_bootstrap`" at end of document for more details.
 
 ```{r}
 A = Q_simulate(alpha = .1, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 1)
@@ -171,8 +171,8 @@ plot_A <- Q_plot(Q = arrange(A, q1),
 plot_B <- Q_plot(Q = B, 
                  K=2,
                  arrange = TRUE) + 
-  ggplot2::scale_fill_brewer(palette = "Blues")+ 
-  ggplot2::scale_color_brewer(palette = "Blues")
+  ggplot2::scale_fill_brewer(palette = "Blues") + 
+  ggplot2::scale_color_manual(values = rep("white", 2))
 
 plot_C <- Q_plot(Q = C, 
                  K=2,
@@ -203,7 +203,7 @@ cowplot::plot_grid(plot_A, plot_B, plot_C, plot_D,
 
 We observe that matrices A and B are visually similar, with most individuals from each matrix possessing all of their ancestry in just one of the two clusters (e.g., for B, all light blue or all dark blue). For a $Q$ matrix with two ancestral clusters, the maximum variability case occurs when every individual (or all but one) has a membership vector of $(0,1)$ or $(1,0)$ (possessing all of its ancestry in just one of the two clusters).  Matrices A and B are close to this maximum case, as they contain just a few individuals with ancestry in multiple clusters.
 
-Matrices C and D, on the other hand, are comprised of individuals with some ancestry from each cluster. These matrices are closer to the minimum variability case, in which every individual's membership coefficients are the same as the mean (e.g., for C, 3/4 dark green and 1/4 light green). 
+Matrices C and D, on the other hand, are comprised of individuals with some ancestry from each cluster. These matrices are closer to the minimum variability case, in which every individual's membership coefficients are the same as the mean (e.g., for C, 3/4 dark green and 1/4 light green).
 
 We have now built intuition about what high and low variability $Q$ matrices look like. The statistic $F_{ST}/F_{ST}^{max}$ quantifies this variability.
 
@@ -238,12 +238,13 @@ To generate a bootstrap distribution for the four simulated $Q$ matrices, I used
 
 * `seed`, an optional number which, if included, is used as the random seed to make the random results reproducible
 
-*`Q_bootstrap` can also take as its `matrices` input a single matrix containing either one or multiple groups for comparison. If the matrix contains individuals from multiple groups which you wish to compare, you must also provide a `group` argument, the name of the column specifying which group each matrix row (individual) belongs to. See the advanced note at the end of this document for more details.
+*`Q_bootstrap` can also take as its `matrices` parameter a single matrix, possibly containing multiple groups for comparison. If the matrix contains individuals from multiple groups which you wish to compare, you must also provide a `group` parameter, the name of the column specifying which group each row (individual) belongs to. See the "Advanced note on the usage of `Q_bootstrap`" at the end of this document for more details.
 
 **If `K` is not provided, `Q_bootstrap` will assume that `K` is equal to the number of columns in the first matrix provided. 
 
 ```{r}
-bootstrap <- Q_bootstrap(matrices = list(A = A, B = B, C = C, D = D), 
+bootstrap <- Q_bootstrap(matrices = list("Matrix A" = A, "Matrix B" = B, 
+                                         "Matrix C" = C, "Matrix D" = D), 
                   n_replicates = 100,
                   K = 2, 
                   seed = 1)
@@ -267,7 +268,8 @@ All three options for visualizing the bootstrap distributions are ggplot objects
 ```{r, fig.height=4}
 cowplot::plot_grid(bootstrap$plot_boxplot + ggplot2::ggtitle("Box Plot"), 
                    bootstrap$plot_violin + ggplot2::ggtitle("Violin Plot"), 
-                   bootstrap$plot_ecdf + ggplot2::ggtitle("ECDF Plot"), 
+                   bootstrap$plot_ecdf + ggplot2::ggtitle("ECDF Plot") +
+                     ggplot2::scale_color_brewer(palette = "Dark2"), 
                    nrow = 2)
 ```
 
@@ -294,14 +296,14 @@ You cannot make comparisons if only one $Q$ matrix is provided. If only one matr
 
 ## Advanced note on the usage of `Q_bootstrap`
 
-We noted above that `Q_bootstrap` can take as its `matrices` argument one matrix which contains individuals from multiple groups we wish to compare. This analysis is relevant if we want to compare the ancestry variability among multiple groups based on the output of programs such as STRUCTURE or ADMIXTURE, which generate one $Q$ matrix for all individuals, with a column corresponding to the group each individual belongs to.
+We noted above that `Q_bootstrap` can take as its `matrices` parameter one matrix which contains individuals from multiple groups we wish to compare. This analysis is relevant if we want to compare the ancestry variability among multiple groups based on the output of programs such as STRUCTURE or ADMIXTURE, which generate one $Q$ matrix for all individuals, with a column corresponding to the group each individual belongs to.
 
 The function `Q_simulate` generates a matrix of this same form. If `rep>1` and/or `alpha` is a vector with more than one entry, `Q_simulate` will generate one matrix containing `rep` times `length(alpha)` total groups of `popsize` individuals, stacked vertically. The column `Pop` of the output is defined as `alpha_rep` (e.g., for the second repetition of a matrix with `alpha = 10`, `Pop=10_2`), and specifies what alpha/rep combination each simulated individual belongs to.
 
 For example, we can use the following code to generate a $Q$ matrix with four groups of 5 individuals and mean membership $(1/3, 1/3, 1/3)$, two with $\alpha = 1$ and two with $\alpha = 10$. 
 
 ```{r}
-Q <- Q_simulate(alpha = c(1,10), lambda = rep(1/3, 3), rep = 2, popsize = 5, seed = 1)
+Q <- Q_simulate(alpha = c(1,10), lambda = c(1/3, 1/3, 1/3), rep = 2, popsize = 5, seed = 1)
 ```
 
 Here is the matrix we have simulated:
