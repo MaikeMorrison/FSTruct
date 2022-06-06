@@ -83,9 +83,9 @@ Q_checker <- function(Q, K, rep) {
 #'   relevant to this plot; their inclusion is optional. When restricted to the
 #'   last \code{K} columns, the rows of this matrix must sum to approximately
 #'   1.
-#' @param K The number of ancestral clusters in the Q matrix. Each individual
-#'   must have \code{K} membership coefficients.
-#' @param arrange Optional variable controlling horizontal ordering of individuals.
+#' @param K Optional; the number of ancestral clusters in the Q matrix. Each individual
+#'   must have \code{K} membership coefficients. Default is the number of columns in \code{Q}.
+#' @param arrange Optional; controls horizontal ordering of individuals.
 #'   If \code{arrange = TRUE}, individuals are ordered by the clusters of greatest
 #'   mean membership.
 #'   \code{K} values of 11 or fewer.
@@ -170,9 +170,9 @@ Q_plot <- function(Q, K=ncol(Q), arrange) {
 #'   relevant to this plot; their inclusion is optional. When restricted to the
 #'   last \code{K} columns, the rows of this matrix must sum to approximately
 #'   1.
-#' @param K The number of ancestral clusters in the Q matrix. Each individual
-#'   must have \code{K} membership coefficients.
-#' @return A named list of containing the following entries:
+#' @param K Optional; the number of ancestral clusters in the Q matrix. Each individual
+#'   must have \code{K} membership coefficients. Default is the number of columns in \code{Q}.
+#' @return A named list containing the following entries:
 #' \itemize{
 #' \item  \code{Fst}: Fst computed as if each individual is a population, and each ancestral cluster is an allele.
 #' \item \code{FstMax}: The maximum value of Fst (for fixed frequency of the most frequent allele, or, in the analogy, the membership of the most prevalent ancestral cluster).
