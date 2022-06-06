@@ -48,7 +48,7 @@ The package includes four functions:
 * `Q_stat` calculates $F_{ST}/F_{ST}^{max}$ (a normalized measure of variability of membership vectors across individuals) for a $Q$ matrix.
 * `Q_bootstrap` generates bootstrap replicates of one or more $Q$ matrices along with associated statistics, including $F_{ST}/F_{ST}^{max}$, as well as plots and statistical tests to compare bootstrap distributions of $F_{ST}/F_{ST}^{max}$ for different matrices. 
 * `Q_plot` plots $Q$ matrices using `ggplot2`.
-* `Q_simulate` generates one or more $Q$ matrices by drawing vectors of membership coefficients (each representing an individual) from the Dirichlet distribution.
+* `Q_simulate` generates $Q$ matrices by drawing vectors of membership coefficients (each representing an individual) from the Dirichlet distribution.
 
 This package accompanies the paper "FSTruct: an FST-based tool for measuring ancestry variation in inference of population structure" by Maike Morrison, Nicolas Alcala, and Noah Rosenberg. [You can access the paper in *Molecular Ecology Resources* at this
 link.](https://doi.org/10.1111/1755-0998.13647)
@@ -131,7 +131,7 @@ The function `Q_simulate` has four parameters:
 
 * `rep`, the number of populations to simulate. Default is 1.
 
-* `seed`, an optional random seed to make results reproducible.
+* `seed`, an optional number which, if included, is used as the random seed to make the random results reproducible. 
 
 For this example, I chose to simulate four $Q$ matrices (`A`, `B`, `C`, and `D`), each with 20 individuals and with the same vector of mean membership coefficients, $\lambda = (.75, .25)$. This means that each $Q$ matrix will have 20 rows and, on average, individuals from any of the four matrices will possess three-quarters of their ancestry from the first ancestral cluster, and one-quarter of their ancestry from the second ancestral cluster. 
 
@@ -151,20 +151,20 @@ D = Q_simulate(alpha = 10, lambda = c(.75, .25), popsize = 20, rep = 1, seed = 4
 
 Here is what matrix `A` looks like:
 ```{r, echo = FALSE}
-knitr::kable(A)
+knitr::kable(A) 
 ```
 
 The format of this $Q$ matrix is very similar to the format of the ADMIXTURE $Q$ matrix above. The last $K=2$ columns contain the membership coefficients.
 
 ## Visualize $Q$ Matrices
 
-We visualize these matrices using the function `Q_plot`, which has one required parameter: a $Q$ matrix (`Q`). If `Q` contains any columns that are not ancestry coefficients (as is the case in our example), we must also specify the number of ancestral clusters (`K`). If `K` is not provided, the function will use all of the columns of `Q`, which is a problem if `Q` contains information other than ancestry vectors. The third parameter, `arrange`, is optional. If `arrange = TRUE`, the individuals' are horizontally ordered by the clusters with the greatest mean membership. Below, we accomplish this ordering manually for plot A, and use `arrange = TRUE` for all subsequent plots. These two methods accomplish the same ordering.
+We visualize these matrices using the function `Q_plot`, which has one required parameter: a $Q$ matrix (`Q`). If `Q` contains any columns that are not ancestry coefficients (as is the case in our example), we must also specify the number of ancestral clusters (`K`). If `K` is not provided, the function will use all of the columns of `Q`, which is a problem if `Q` contains information other than ancestry vectors. The third parameter, `arrange`, is optional. If `arrange = TRUE`, the individuals are horizontally ordered by the clusters with the greatest mean membership. Below, we accomplish this ordering manually for plot A, and use `arrange = TRUE` for all subsequent plots. These two methods accomplish the same ordering.
 
 ```{r}
 # Generate and modify a plot for each Q matrix
 
 # Manual arranging of individuals
-plot_A <- Q_plot(Q = arrange(A, q1),
+plot_A <- Q_plot(Q = dplyr::arrange(A, q1),
                  K=2)
 
 # Using the Q_plot arrange option
@@ -309,7 +309,7 @@ Q <- Q_simulate(alpha = c(1,10), lambda = c(1/3, 1/3, 1/3), popsize = 5, rep = 2
 Here is the matrix we have simulated:
 
 ```{r, echo = FALSE}
-knitr::kable(Q)
+knitr::kable(Q) 
 ```
 
 We can generate bootstrap distributions comparing the four groups of matrices with the following code:
