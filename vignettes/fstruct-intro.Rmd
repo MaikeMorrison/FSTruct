@@ -127,9 +127,9 @@ The function `Q_simulate` has four parameters:
 
 * `lambda`, a vector that controls the mean membership of each ancestral cluster.
 
-* `rep`, the number of populations to simulate.
-
 * `popsize`, the number of individuals to put in the $Q$ matrix.
+
+* `rep`, the number of populations to simulate. Default is 1.
 
 * `seed`, an optional random seed to make results reproducible.
 
@@ -140,13 +140,13 @@ I chose to simulate matrices `A` and `B` using $\alpha = 0.1$, which results in 
 *`alpha` can also be a numeric vector. See the "Advanced note on the usage of `Q_bootstrap`" at end of document for more details.
 
 ```{r}
-A = Q_simulate(alpha = .1, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 1)
+A = Q_simulate(alpha = .1, lambda = c(.75, .25), popsize = 20, rep = 1, seed = 1)
 
-B = Q_simulate(alpha = .1, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 2)
+B = Q_simulate(alpha = .1, lambda = c(.75, .25), popsize = 20, rep = 1, seed = 2)
 
-C = Q_simulate(alpha = 10, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 3)
+C = Q_simulate(alpha = 10, lambda = c(.75, .25), popsize = 20, rep = 1, seed = 3)
 
-D = Q_simulate(alpha = 10, lambda = c(.75, .25), rep = 1, popsize = 20, seed = 4)
+D = Q_simulate(alpha = 10, lambda = c(.75, .25), popsize = 20, rep = 1, seed = 4)
 ```
 
 Here is what matrix `A` looks like:
@@ -228,7 +228,7 @@ To answer these questions, we employ  [bootstrapping](https://en.wikipedia.org/w
 
 A bootstrap replicate of a $Q$ matrix is a second matrix with the same dimensions whose rows were drawn with replacement from those of the original matrix. By generating many bootstrap replicate matrices and computing $F_{ST}/F_{ST}^{max}$ for each, we generate a bootstrap distribution of $F_{ST}/F_{ST}^{max}$. This bootstrap distribution is an estimate of the sampling distribution (the distribution obtained by drawing multiple $Q$ matrices from the full population). We can perform statistical tests of identity of the bootstrap means to draw conclusions about whether the original $Q$ matrices have significantly different variabilities.
 
-To generate a bootstrap distribution for the four simulated $Q$ matrices, I used the function `Q_bootstrap`, which has four parameters: 
+To generate a bootstrap distribution for the four simulated $Q$ matrices, I used the function `Q_bootstrap`, which has four core parameters: 
 
 * `matrices`, a named list of $Q$ matrices to analyze*
 
@@ -303,7 +303,7 @@ The function `Q_simulate` generates a matrix of this same form. If `rep>1` and/o
 For example, we can use the following code to generate a $Q$ matrix with four groups of 5 individuals and mean membership $(1/3, 1/3, 1/3)$, two with $\alpha = 1$ and two with $\alpha = 10$. 
 
 ```{r}
-Q <- Q_simulate(alpha = c(1,10), lambda = c(1/3, 1/3, 1/3), rep = 2, popsize = 5, seed = 1)
+Q <- Q_simulate(alpha = c(1,10), lambda = c(1/3, 1/3, 1/3), popsize = 5, rep = 2, seed = 1)
 ```
 
 Here is the matrix we have simulated:
