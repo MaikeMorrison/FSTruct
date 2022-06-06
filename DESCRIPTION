@@ -1,7 +1,7 @@
 Package: FSTruct
 Type: Package
 Title: Measure variability in population structure estimates
-Version: 0.0.0.9000
+Version: 1.0
 Authors@R: person("Maike", "Morrison", email = "maikem@stanford.edu",
   role = c("aut", "cre"))
 Description: An Fst-based tool to quantify and compare the variability in Q matrices that contain 
