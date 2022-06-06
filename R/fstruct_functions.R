@@ -627,8 +627,8 @@ Q_bootstrap <- function(matrices, n_replicates, K, seed, group) {
 #' Q <- Q_simulate(
 #'   alpha = 1,
 #'   lambda = c(1 / 2, 1 / 4, 1 / 4),
-#'   rep = 100,
 #'   popsize = 50,
+#'   rep = 100,
 #'   seed = 1
 #' )
 #'
