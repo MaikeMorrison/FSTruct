@@ -4,11 +4,11 @@ Title: Measure variability in population structure estimates
 Version: 1.0
 Authors@R: person("Maike", "Morrison", email = "maikem@stanford.edu",
   role = c("aut", "cre"))
-Description: An Fst-based tool to quantify and compare the variability in Q matrices that contain rows of individual membership coefficient vectors (the default output of population structure inference programs such as STRUCTURE and ADMIXTURE). Included functions simulate random Q matrices, plot Q matrices using ggplot2, calculate Fst/FstMax (a normalized measure of variability) for a Q matrix, and generate bootstrap replicates of one or more Q matrices along with associated statistics. This package accompanies the paper "FSTruct: an FST-based tool for measuring ancestry variation in inference of population structure" by Maike Morrison, Nicolas Alcala, and Noah Rosenberg. [You can access the paper in *Molecular Ecology Resources* at this
-link.](https://doi.org/10.1111/1755-0998.13647)
+Description: An Fst-based tool to quantify and compare the variability in Q matrices that contain rows of individual membership coefficient vectors (the default output of population structure inference programs such as STRUCTURE and ADMIXTURE). Included functions simulate random Q matrices, plot Q matrices using ggplot2, calculate Fst/FstMax (a normalized measure of variability) for a Q matrix, and generate bootstrap replicates of one or more Q matrices along with associated statistics. This package accompanies the paper "FSTruct: an FST-based tool for measuring ancestry variation in inference of population structure" by Maike Morrison, Nicolas Alcala, and Noah Rosenberg. You can access the paper in Molecular Ecology Resources at this link: https://doi.org/10.1111/1755-0998.13647.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+URL: https://github.com/MaikeMorrison/FSTruct
 Imports:
     dplyr,
     ggplot2,
