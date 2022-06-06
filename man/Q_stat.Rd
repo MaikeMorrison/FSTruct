@@ -4,7 +4,7 @@
 \alias{Q_stat}
 \title{Compute Fst, FstMax, and the ratio Fst/FstMax for a Q matrix}
 \usage{
-Q_stat(Q, K)
+Q_stat(Q, K = ncol(Q))
 }
 \arguments{
 \item{Q}{A dataframe, matrix, or array representing a Q matrix. Each row

@@ -4,7 +4,7 @@
 \alias{Q_plot}
 \title{Plot a Q matrix using ggplot2}
 \usage{
-Q_plot(Q, K, arrange)
+Q_plot(Q, K = ncol(Q), arrange)
 }
 \arguments{
 \item{Q}{A dataframe, matrix, or array representing a Q matrix. Each row

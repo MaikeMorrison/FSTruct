@@ -68,22 +68,26 @@ knitr::kable(A)
 
 plot_A <- Q_plot(Q = A %>% arrange(q1),
                  K=2) + 
-  ggplot2::scale_fill_brewer("Blues")
+  ggplot2::scale_fill_brewer("Blues")+ 
+  ggplot2::scale_color_brewer("Blues")
 
 plot_B <- Q_plot(Q = B, 
                  K=2,
                  arrange = TRUE) + 
-  ggplot2::scale_fill_brewer("Blues")
+  ggplot2::scale_fill_brewer("Blues")+ 
+  ggplot2::scale_color_brewer("Blues")
 
 plot_C <- Q_plot(Q = C, 
                  K=2,
                  arrange = TRUE) + 
-  ggplot2::scale_fill_brewer("Blues")
+  ggplot2::scale_fill_brewer("Blues")+ 
+  ggplot2::scale_color_brewer("Blues")
 
 plot_D <- Q_plot(Q = D, 
                  K=2,
                  arrange = TRUE) + 
-  ggplot2::scale_fill_brewer("Blues")
+  ggplot2::scale_fill_brewer("Blues")+ 
+  ggplot2::scale_color_brewer("Blues")
 
 ## -----------------------------------------------------------------------------
 # Display these plots in a grid

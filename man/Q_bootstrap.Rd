@@ -4,16 +4,18 @@
 \alias{Q_bootstrap}
 \title{Generate and analyze bootstrap replicates of one or more Q matrices}
 \usage{
-Q_bootstrap(matrices, n_replicates, K, seed)
+Q_bootstrap(matrices, n_replicates, K, seed, group)
 }
 \arguments{
-\item{matrices}{A dataframe, matrix, or array representing a Q matrix, or a (possibly named) list of arbitrarily many such objects. For each Q matrix, matrix rows represent an individual and the last \code{K} columns contain individual membership coefficients (when restricted to the last \code{K} columns, the rows must sum to approximately 1). If the matrices are not named (e.g., \code{matrices = list(matrix1, matrix2)} instead of \code{matrices = list(A = matrix1, B = matrix2)}), the matrices will be numbered in the order they are provided in the list.}
+\item{matrices}{A dataframe, matrix, or array representing a Q matrix or a (possibly named) list of arbitrarily many Q matrices. For each Q matrix, matrix rows represent individuals and the last \code{K} columns contain individual membership coefficients (when restricted to the last \code{K} columns, the rows must sum to approximately 1). If the matrices are not named (e.g., \code{matrices = list(matrix1, matrix2)} instead of \code{matrices = list(A = matrix1, B = matrix2)}), the matrices will be numbered in the order they are provided in the list. If \code{matrices} is a single matrix, dataframe, or array and \code{group} is specified, the matrix will be split into multiple Q matrices, one for each distinct value of the column \code{group}, which will each be analyzed separately.}
 
 \item{n_replicates}{The number of bootstrap replicate matrices to generate for each provided Q matrix.}
 
-\item{K}{The number of ancestral clusters in each provided Q matrix, or a vector of such K values if the value of Q differs between matrices. If a single K is provided, each individual in every matrix must have \code{K} membership coefficients. If a vector of multiple K values is provided, each must correspond to a Q matrix in \code{matrices} and be provided in the same order as the matrices.}
+\item{K}{Optional; the number of ancestral clusters in each provided Q matrix, or a vector of such K values if the value of Q differs between matrices. If a single K is provided, each individual in every matrix must have \code{K} membership coefficients. If a vector of multiple K values is provided, \code{matrices} must be a list and the \eqn{i^{th}} entry of \code{K} must correspond to the \eqn{i^{th}} Q matrix in \code{matrices}. The default value of \code{K} is the number of columns in the matrix, the number of columns in the first matrix if a list is provided, or the number of columns minus 1 if \code{group} is specified but \code{K} is not.}
 
-\item{seed}{Optional; sets the random seed. Use if reproducibility of random results is desired.}
+\item{seed}{Optional; a number to set as the random seed. Use if reproducibility of random results is desired.}
+
+\item{group}{Optional; a string specifying the name of the column that describes which group each row (individual) belongs to. Use if \code{matrices} is a single matrix containing multiple groups of individuals you wish to compare. If the matrix was simulated using \code{Q_simulate} with \code{rep > 1} and/or a vector for \code{alpha}, \code{group = "Pop"}.}
 }
 \value{
 A named list containing the following entries:
@@ -35,38 +37,38 @@ Generates bootstrap replicate Q matrices, computes Fst/FstMax for each bootstrap
 A <- Q_simulate(
   alpha = .1,
   lambda = c(.5, .5),
-  rep = 1,
   popsize = 20,
+  rep = 1,
   seed = 1
 )
 
 B <- Q_simulate(
   alpha = .1,
   lambda = c(.5, .5),
-  rep = 1,
   popsize = 20,
+  rep = 1,
   seed = 2
 )
 
 C <- Q_simulate(
   alpha = 1,
   lambda = c(.5, .5),
-  rep = 1,
   popsize = 20,
+  rep = 1,
   seed = 3
 )
 
 D <- Q_simulate(
   alpha = 1,
   lambda = c(.5, .5),
-  rep = 1,
   popsize = 20,
+  rep = 1,
   seed = 4
 )
 
 # Draw 100 bootstrap replicates from
 # each of the 4 Q matrices
-bs <- Q_bootstrap(
+bootstrap_1 <- Q_bootstrap(
   matrices = list(
     A = A,
     B = B,
@@ -81,18 +83,51 @@ bs <- Q_bootstrap(
 # For example:
 # To look at all 400 bootstrap Q matrix
 # replicates:
-bs$bootstrap_replicates
+bootstrap_1$bootstrap_replicates
 
 # To look at Fst, FstMax, and
 # the ratio (Fst/FstMax) for each replicate
-bs$statistics
+bootstrap_1$statistics
 
 # To look at a plot of the distribution of
 # Fst/FstMax for each Q matrix:
-bs$plot_violin
+bootstrap_1$plot_violin
 
 # To determine if each of the 4 distibutions of
 # Fst/FstMax is significantly different from
 # each of the other distributions:
-bs$test_pairwise_wilcox
+bootstrap_1$test_pairwise_wilcox
+
+# Alternatively, you can simulate all of your comparison populations at once
+# and use the group parameter:
+
+# Here, Q_simulate generates 4 populations with the same parameters used to
+# simulate the 4 Q matrices above. However, these will all be stacked in one
+# matrix, rather than assigning each to a separate matrix.
+
+Q_4 <- Q_simulate(alpha = c(0.1, 1),
+                  lambda = c(0.5, 0.5),
+                  popsize = 20,
+                  rep = 2,
+                  seed = 1)
+
+# Look at the first few rows of Q_4
+head(Q_4)
+
+# Generate 100 bootstrap replicates for each of the
+bootstrap_2 <- Q_bootstrap(matrices = Q_4,
+                           n_replicates = 100,
+                           K = 2,
+                           seed = 1,
+                           group = "Pop")
+
+# To look at a plot of the distribution of
+# Fst/FstMax for each Q matrix:
+bootstrap_2$plot_violin
+
+# To determine if each of the 4 distibutions of
+# Fst/FstMax is significantly different from
+# each of the other distributions:
+bootstrap_2$test_pairwise_wilcox
+
 }
