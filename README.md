@@ -28,8 +28,8 @@ measuring ancestry variation in inference of population structure” by
 Maike Morrison, Nicolas Alcala, and Noah Rosenberg. [You can access the
 paper in *Molecular Ecology Resources* at this
 link.](https://doi.org/10.1111/1755-0998.13647) The supplemental data
-accompanying this paper is available [on this GitHub
-repository.](https://github.com/MaikeMorrison/FSTruct/tree/master/Supplemental%20Data%20to%20Morrison%20et%20al.%202022)
+accompanying this paper is available [on this GitHub repository, as
+well.](https://github.com/MaikeMorrison/FSTruct/tree/master/Supplemental%20Data%20to%20Morrison%20et%20al.%202022)
 
 ## Installation
 
