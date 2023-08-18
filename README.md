@@ -30,7 +30,7 @@ paper in *Molecular Ecology Resources* at this
 link.](https://doi.org/10.1111/1755-0998.13647) Q matrix files for data
 examples that appeared in this paper are available [on this GitHub
 repository, as
-well.](https://github.com/MaikeMorrison/FSTruct/tree/master/Supplemental%20Data%20to%20Morrison%20et%20al.%202022)
+well.](https://github.com/MaikeMorrison/FSTruct/tree/master/Q%20matrix%20files%20for%20examples%20in%20Morrison%20et%20al.%20(2022))
 
 ## Installation
 
